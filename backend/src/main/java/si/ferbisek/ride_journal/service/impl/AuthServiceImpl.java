@@ -13,7 +13,6 @@ import si.ferbisek.ride_journal.service.AuthService;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User register(String username, String hashedPassword) {

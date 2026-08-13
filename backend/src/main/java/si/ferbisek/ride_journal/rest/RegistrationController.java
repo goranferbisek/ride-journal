@@ -1,6 +1,8 @@
 package si.ferbisek.ride_journal.rest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +23,7 @@ public class RegistrationController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
         String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
         User registeredUser = authService.register(registrationRequest.getUsername(), encodedPassword);
 
@@ -29,7 +31,7 @@ public class RegistrationController {
         registrationResponse.setId(registeredUser.getId());
         registrationResponse.setUsername(registeredUser.getUsername());
 
-        return ResponseEntity.created(null).body(registrationResponse);
+        return new ResponseEntity<>(registrationResponse, HttpStatus.CREATED);
     }
 
 
