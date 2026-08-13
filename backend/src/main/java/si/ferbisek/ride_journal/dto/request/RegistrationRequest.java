@@ -13,6 +13,6 @@ public class RegistrationRequest {
     private String username;
 
     @NotBlank(message = "Password is required")
-    @Length(min = 8, max = 72, message = "Password must be between 8 and 72 characters")
+    @Length(min = 8, max = 64, message = "Password must be between 8 and 72 characters")
     private String password;
 }
