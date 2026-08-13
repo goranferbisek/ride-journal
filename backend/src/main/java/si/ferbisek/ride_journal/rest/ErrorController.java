@@ -14,7 +14,7 @@ public class ErrorController {
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<String> handleUsernameAlreadyExistsException() {
-        log.error("Username already exists");
+        log.warn("Username already exists");
 
         // should return an error object with field specific messages
         return new ResponseEntity<>("Username already exists", HttpStatus.CONFLICT);
