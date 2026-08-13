@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +19,10 @@ import si.ferbisek.ride_journal.service.AuthService;
 public class RegistrationController {
 
     private final AuthService authService;
-    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
-        User registeredUser = authService.register(registrationRequest.getUsername(), encodedPassword);
+        User registeredUser = authService.register(registrationRequest.getUsername(), registrationRequest.getPassword());
 
         RegistrationResponse registrationResponse = new RegistrationResponse();
         registrationResponse.setId(registeredUser.getId());

@@ -13,12 +13,15 @@ import si.ferbisek.ride_journal.service.AuthService;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User register(String username, String hashedPassword) {
+    public User register(String username, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new UsernameAlreadyExistsException();
         }
+
+        String hashedPassword = passwordEncoder.encode(password);
 
         User user = new User();
         user.setUsername(username);
