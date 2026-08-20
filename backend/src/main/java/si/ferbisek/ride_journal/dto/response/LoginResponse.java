@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @Getter @Setter
-public class RegistrationResponse {
+public class LoginResponse {
 
-    private Long id;
-    private String username;
+    private String token;
+    private long expiresIn;
 }
