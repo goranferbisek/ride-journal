@@ -27,16 +27,18 @@ public class JwtTokenProvider {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateJwtToken(UserDetails userDetails) {
+    public TokenWithExpiresAt generateJwtToken(UserDetails userDetails) {
         long now = System.currentTimeMillis();
 
-        return Jwts.builder()
+        String jwtToken = Jwts.builder()
                 .issuer("ride-journal")
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + jwtExpiryMillis))
                 .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
+
+        return new TokenWithExpiresAt(jwtToken, jwtExpiryMillis);
     }
 
     //TODO: implement method to validate token

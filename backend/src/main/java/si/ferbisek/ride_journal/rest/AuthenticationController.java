@@ -15,6 +15,7 @@ import si.ferbisek.ride_journal.dto.response.LoginResponse;
 import si.ferbisek.ride_journal.dto.response.RegistrationResponse;
 import si.ferbisek.ride_journal.entity.User;
 import si.ferbisek.ride_journal.security.JwtTokenProvider;
+import si.ferbisek.ride_journal.security.TokenWithExpiresAt;
 import si.ferbisek.ride_journal.service.AuthService;
 
 @RequiredArgsConstructor
@@ -43,12 +44,9 @@ public class AuthenticationController {
                 loginRequest.getPassword()
         );
 
-        // generate token
-        String jwtToken = jwtTokenProvider.generateJwtToken(userDetails);
+        TokenWithExpiresAt tokenWithExpiresAt = jwtTokenProvider.generateJwtToken(userDetails);
 
-        // put token in login response
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(jwtToken);
+        LoginResponse loginResponse = new LoginResponse(tokenWithExpiresAt.jwtToken(), tokenWithExpiresAt.expiresAt());
 
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
