@@ -17,9 +17,6 @@ import si.ferbisek.ride_journal.service.AuthService;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Value("${jwt.expiry}")
-    private long jwtExpiryMillis;
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;

@@ -1,33 +1,44 @@
 package si.ferbisek.ride_journal.security;
 
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String secret;
 
     @Value("${jwt.expiry}")
     private long jwtExpiryMillis;
 
+    private SecretKey secretKey;
+
+    @PostConstruct
+    public void init() {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
     public String generateJwtToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
+        long now = System.currentTimeMillis();
+
         return Jwts.builder()
-                .claims().add(claims).and()
+                .issuer("ride-journal")
                 .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiryMillis))
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + jwtExpiryMillis))
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
+
+    //TODO: implement method to validate token
 
 }
