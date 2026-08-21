@@ -35,17 +35,18 @@ public class JwtTokenProvider {
 
     public TokenWithExpiresAt generateJwtToken(UserDetails userDetails) {
         long now = System.currentTimeMillis();
+        long expiresAt = now + jwtExpiryMillis;
 
         String jwtToken = Jwts.builder()
                 .header().add("typ", "JWT").and()
                 .issuer("ride-journal")
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(now))
-                .expiration(new Date(now + jwtExpiryMillis))
+                .expiration(new Date(expiresAt))
                 .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
 
-        return new TokenWithExpiresAt(jwtToken, jwtExpiryMillis);
+        return new TokenWithExpiresAt(jwtToken, expiresAt);
     }
 
     public boolean validateToken(String token) {
