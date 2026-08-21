@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,16 +40,21 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        UserDetails userDetails = authService.authenticate(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()
-        );
+        try {
+            UserDetails userDetails = authService.authenticate(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+            );
 
-        TokenWithExpiresAt tokenWithExpiresAt = jwtTokenProvider.generateJwtToken(userDetails);
+            TokenWithExpiresAt tokenWithExpiresAt = jwtTokenProvider.generateJwtToken(userDetails);
 
-        LoginResponse loginResponse = new LoginResponse(tokenWithExpiresAt.jwtToken(), tokenWithExpiresAt.expiresAt());
+            LoginResponse loginResponse = new LoginResponse(tokenWithExpiresAt.jwtToken(), tokenWithExpiresAt.expiresAt());
 
-        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        } catch (AuthenticationException exception) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
 

@@ -31,6 +31,7 @@ public class JwtTokenProvider {
         long now = System.currentTimeMillis();
 
         String jwtToken = Jwts.builder()
+                .header().add("typ", "JWT").and()
                 .issuer("ride-journal")
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(now))
