@@ -4,21 +4,28 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import si.ferbisek.ride_journal.dto.request.LoginRequest;
 import si.ferbisek.ride_journal.dto.request.RegistrationRequest;
+import si.ferbisek.ride_journal.dto.response.LoginResponse;
 import si.ferbisek.ride_journal.dto.response.RegistrationResponse;
 import si.ferbisek.ride_journal.entity.User;
+import si.ferbisek.ride_journal.security.JwtTokenProvider;
+import si.ferbisek.ride_journal.security.TokenWithExpiresAt;
 import si.ferbisek.ride_journal.service.AuthService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/auth")
-public class RegistrationController {
+@RequestMapping("/api/v1/auth")
+public class AuthenticationController {
 
     private final AuthService authService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
@@ -29,6 +36,25 @@ public class RegistrationController {
         registrationResponse.setUsername(registeredUser.getUsername());
 
         return new ResponseEntity<>(registrationResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            UserDetails userDetails = authService.authenticate(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+            );
+
+            TokenWithExpiresAt tokenWithExpiresAt = jwtTokenProvider.generateJwtToken(userDetails);
+
+            LoginResponse loginResponse = new LoginResponse(tokenWithExpiresAt.jwtToken(), tokenWithExpiresAt.expiresAt());
+
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        } catch (AuthenticationException exception) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
 

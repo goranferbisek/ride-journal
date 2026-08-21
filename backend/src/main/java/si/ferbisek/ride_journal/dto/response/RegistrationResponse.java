@@ -9,6 +9,5 @@ import lombok.Setter;
 public class RegistrationResponse {
 
     private Long id;
-
     private String username;
 }
