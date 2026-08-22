@@ -13,7 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import si.ferbisek.ride_journal.repository.UserRepository;
+import si.ferbisek.ride_journal.security.JwtAuthFilter;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +28,7 @@ public class SecurityConfig {
     private final List<String> publicPaths;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
@@ -36,7 +38,7 @@ public class SecurityConfig {
                             request.anyRequest().authenticated();
                         }
 
-                );
+                ).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

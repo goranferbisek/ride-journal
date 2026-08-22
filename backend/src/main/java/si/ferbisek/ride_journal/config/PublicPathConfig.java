@@ -13,6 +13,6 @@ public class PublicPathConfig {
         return List.of(
                 "/api/v1/auth/**"
         );
-    };
+    }
 
 }
