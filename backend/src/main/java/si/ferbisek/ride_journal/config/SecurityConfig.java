@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import si.ferbisek.ride_journal.repository.UserRepository;
 import si.ferbisek.ride_journal.security.JwtAuthFilter;
+import si.ferbisek.ride_journal.security.JwtTokenProvider;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +46,11 @@ public class SecurityConfig {
                 ).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthFilter jwtAuthFilter(JwtTokenProvider jwtTokenProvider, List<String> publicPaths, UserDetailsService userDetailsService) {
+        return new JwtAuthFilter(jwtTokenProvider, publicPaths, userDetailsService);
     }
 
     @Bean

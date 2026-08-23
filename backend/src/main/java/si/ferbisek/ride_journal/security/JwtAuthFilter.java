@@ -21,7 +21,6 @@ import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
-@Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
