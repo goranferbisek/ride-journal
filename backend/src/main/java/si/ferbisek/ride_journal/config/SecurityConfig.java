@@ -30,7 +30,9 @@ public class SecurityConfig {
     private final List<String> publicPaths;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider,
+                                           UserDetailsService userDetailsService) {
+        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtTokenProvider, publicPaths, userDetailsService);
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session
@@ -46,11 +48,6 @@ public class SecurityConfig {
                 ).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public JwtAuthFilter jwtAuthFilter(JwtTokenProvider jwtTokenProvider, List<String> publicPaths, UserDetailsService userDetailsService) {
-        return new JwtAuthFilter(jwtTokenProvider, publicPaths, userDetailsService);
     }
 
     @Bean
