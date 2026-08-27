@@ -7,9 +7,7 @@ import GaragePage from "../pages/GaragePage.tsx";
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App/>}>
     <Route path="/login" element={<LoginPage/>}/>
-    {/* public paths */}
     <Route element={<ProtectedRoute/>}>
-      {/* protected paths */}
       <Route path="/garage" element={<GaragePage/>}/>
     </Route>
   </Route>
