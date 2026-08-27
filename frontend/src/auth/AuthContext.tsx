@@ -64,7 +64,7 @@ export const AuthProvider = ({children}) => {
     try {
       if (authState.isAuthenticated) {
         localStorage.setItem("jwtToken", authState.jwtToken);
-        localStorage.setItem("userf", JSON.stringify(authState.user));
+        localStorage.setItem("user", JSON.stringify(authState.user));
       } else {
         localStorage.removeItem("jwtToken");
         localStorage.removeItem("user");
