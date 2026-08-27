@@ -17,11 +17,11 @@ type AuthAction =
   | { type: "LOGOUT" };
 
 export const AuthContext = createContext({
-  jwtToken: null,
-  user: null,
-  isAuthenticated: null,
-  setUser: () => {
-  },
+  jwtToken: null as string | null,
+  user: null as User | null,
+  isAuthenticated: null as boolean | null,
+  loginSuccess: (_jwtToken: string, _user: User) => {},
+  logout: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -104,8 +104,8 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         jwtToken: authState.jwtToken,
         user: authState.user,
         isAuthenticated: authState.isAuthenticated,
-        setUser: () => {
-        },
+        loginSuccess,
+        logout,
       }}
     >
       {children}
