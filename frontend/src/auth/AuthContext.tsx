@@ -78,7 +78,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
   useEffect(() => {
     try {
-      if (authState.isAuthenticated) {
+      if (authState.isAuthenticated && authState.jwtToken) {
         localStorage.setItem("jwtToken", authState.jwtToken);
         localStorage.setItem("user", JSON.stringify(authState.user));
       } else {
