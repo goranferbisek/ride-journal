@@ -1,4 +1,20 @@
+import type {ReactNode} from "react";
 import {createContext, useEffect, useContext, useReducer} from "react";
+
+type User = {
+  id?: string;
+  username?: string;
+};
+
+type AuthState = {
+  jwtToken: string | null;
+  user: User | null;
+  isAuthenticated: boolean;
+};
+
+type AuthAction =
+  | { type: "LOGIN_SUCCESS"; payload: { jwtToken: string; user: User } }
+  | { type: "LOGOUT" };
 
 export const AuthContext = createContext({
   jwtToken: null,
@@ -14,7 +30,7 @@ export const useAuth = () => useContext(AuthContext);
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGOUT = "LOGOUT";
 
-const authReducer = (prevState, action) => {
+const authReducer = (prevState: AuthState, action: AuthAction) => {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return {
@@ -35,7 +51,7 @@ const authReducer = (prevState, action) => {
   }
 }
 
-export const AuthProvider = ({children}) => {
+export const AuthProvider = ({children}: { children: ReactNode }) => {
   const initialAuthState = (() => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
@@ -74,7 +90,7 @@ export const AuthProvider = ({children}) => {
     }
   }, [authState]);
 
-  const loginSuccess = (jwtToken, user) => {
+  const loginSuccess = (jwtToken: string, user: User) => {
     dispatch({type: LOGIN_SUCCESS, payload: {jwtToken, user}});
   };
 
@@ -88,7 +104,8 @@ export const AuthProvider = ({children}) => {
         jwtToken: authState.jwtToken,
         user: authState.user,
         isAuthenticated: authState.isAuthenticated,
-        setUser: () => {},
+        setUser: () => {
+        },
       }}
     >
       {children}
