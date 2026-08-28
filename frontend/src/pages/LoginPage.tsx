@@ -7,9 +7,9 @@ function LoginForm() {
     <Form action="" method="POST">
       <Stack spacing={2}>
         <h2>Login</h2>
-        <TextField label="Username"/>
-        <TextField label="Password" type="password"/>
-        <Button variant="contained">Login</Button>
+        <TextField label="Username" name="username"/>
+        <TextField label="Password" name="password" type="password"/>
+        <Button variant="contained" type="submit">Login</Button>
       </Stack>
     </Form>
   </Container>
