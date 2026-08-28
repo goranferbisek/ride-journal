@@ -1,13 +1,12 @@
-import { Outlet } from 'react-router'
-import './App.css'
+import {Outlet} from 'react-router'
+import {CssBaseline} from "@mui/material";
 
 function App() {
 
   return (
     <>
-      <section id="center">
-        <Outlet/>
-      </section>
+      <CssBaseline/>
+      <Outlet/>
     </>
   )
 }
