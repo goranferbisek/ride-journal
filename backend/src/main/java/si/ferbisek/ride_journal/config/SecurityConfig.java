@@ -80,7 +80,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(Collections.singletonList("*"));
-        config.setAllowedHeaders(Collections.singletonList("Authorization")); // or should I allow * all?
+        config.setAllowedHeaders(Collections.singletonList("*"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
