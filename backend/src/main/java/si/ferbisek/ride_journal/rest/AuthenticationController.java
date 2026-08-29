@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import si.ferbisek.ride_journal.dto.UserDto;
 import si.ferbisek.ride_journal.dto.request.LoginRequest;
 import si.ferbisek.ride_journal.dto.request.RegistrationRequest;
 import si.ferbisek.ride_journal.dto.response.LoginResponse;
@@ -48,7 +49,12 @@ public class AuthenticationController {
 
             TokenWithExpiresAt tokenWithExpiresAt = jwtTokenProvider.generateJwtToken(userDetails);
 
-            LoginResponse loginResponse = new LoginResponse(tokenWithExpiresAt.jwtToken(), tokenWithExpiresAt.expiresAt());
+            UserDto userDto = new UserDto();
+            userDto.setUsername(loginRequest.getUsername());
+            LoginResponse loginResponse = new LoginResponse(
+                    tokenWithExpiresAt.jwtToken(),
+                    tokenWithExpiresAt.expiresAt(),
+                    userDto);
 
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
         } catch (AuthenticationException exception) {

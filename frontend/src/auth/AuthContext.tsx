@@ -3,7 +3,6 @@ import {createContext, useContext, useReducer} from "react";
 import {setAuthToken} from "../api/client.ts";
 
 type User = {
-  id?: string;
   username?: string;
 };
 
