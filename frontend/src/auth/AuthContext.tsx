@@ -1,5 +1,6 @@
 import type {ReactNode} from "react";
-import {createContext, useEffect, useContext, useReducer} from "react";
+import {createContext, useContext, useReducer} from "react";
+import {setAuthToken} from "../api/client.ts";
 
 type User = {
   id?: string;
@@ -20,8 +21,10 @@ export const AuthContext = createContext({
   jwtToken: null as string | null,
   user: null as User | null,
   isAuthenticated: null as boolean | null,
-  loginSuccess: (_jwtToken: string, _user: User) => {},
-  logout: () => {},
+  loginSuccess: (_jwtToken: string, _user: User) => {
+  },
+  logout: () => {
+  },
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -51,50 +54,22 @@ const authReducer = (prevState: AuthState, action: AuthAction) => {
   }
 }
 
+const initialAuthState: AuthState = ({
+  jwtToken: null,
+  user: null,
+  isAuthenticated: false,
+});
+
 export const AuthProvider = ({children}: { children: ReactNode }) => {
-  const initialAuthState = (() => {
-    try {
-      const jwtToken = localStorage.getItem("jwtToken");
-      const user = localStorage.getItem("user");
-
-      if (jwtToken && user) {
-        return {
-          jwtToken,
-          user: JSON.parse(user),
-          isAuthenticated: true,
-        }
-      }
-    } catch (error) {
-      console.error("Failed to load from localStorage", error);
-    }
-    return {
-      jwtToken: null,
-      user: null,
-      isAuthenticated: false,
-    }
-  })();
-
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  useEffect(() => {
-    try {
-      if (authState.isAuthenticated && authState.jwtToken) {
-        localStorage.setItem("jwtToken", authState.jwtToken);
-        localStorage.setItem("user", JSON.stringify(authState.user));
-      } else {
-        localStorage.removeItem("jwtToken");
-        localStorage.removeItem("user");
-      }
-    } catch (error) {
-      console.error("Failed to save to localStorage", error);
-    }
-  }, [authState]);
-
   const loginSuccess = (jwtToken: string, user: User) => {
+    setAuthToken(jwtToken);
     dispatch({type: LOGIN_SUCCESS, payload: {jwtToken, user}});
   };
 
   const logout = () => {
+    setAuthToken(null);
     dispatch({type: LOGOUT});
   };
 
