@@ -54,13 +54,13 @@ const authReducer = (prevState: AuthState, action: AuthAction) => {
   }
 }
 
-export const AuthProvider = ({children}: { children: ReactNode }) => {
-  const initialAuthState: AuthState = ({
-    jwtToken: null,
-    user: null,
-    isAuthenticated: false,
-  });
+const initialAuthState: AuthState = ({
+  jwtToken: null,
+  user: null,
+  isAuthenticated: false,
+});
 
+export const AuthProvider = ({children}: { children: ReactNode }) => {
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
   useEffect(() => {
