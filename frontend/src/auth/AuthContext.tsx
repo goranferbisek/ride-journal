@@ -1,5 +1,5 @@
 import type {ReactNode} from "react";
-import {createContext, useEffect, useContext, useReducer} from "react";
+import {createContext, useContext, useReducer} from "react";
 import {setAuthToken} from "../api/client.ts";
 
 type User = {
@@ -63,15 +63,13 @@ const initialAuthState: AuthState = ({
 export const AuthProvider = ({children}: { children: ReactNode }) => {
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  useEffect(() => {
-    setAuthToken(authState.jwtToken);
-  }, [authState.jwtToken]);
-
   const loginSuccess = (jwtToken: string, user: User) => {
+    setAuthToken(jwtToken);
     dispatch({type: LOGIN_SUCCESS, payload: {jwtToken, user}});
   };
 
   const logout = () => {
+    setAuthToken(null);
     dispatch({type: LOGOUT});
   };
 
