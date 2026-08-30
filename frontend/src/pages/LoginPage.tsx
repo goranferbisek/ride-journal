@@ -1,5 +1,5 @@
 import {Alert, Button, Container, Stack, TextField} from "@mui/material";
-import {type ActionFunctionArgs, Form, useActionData, useNavigate} from "react-router";
+import {type ActionFunctionArgs, Form, useActionData, useNavigate, data} from "react-router";
 import api, {setAuthToken} from "../api/client.ts";
 import axios from "axios";
 import {useEffect} from "react";
@@ -33,11 +33,14 @@ export default function LoginPage() {
     <Form method="POST">
       <Stack spacing={2}>
         <h2>Login</h2>
-        <TextField label="Username" name="username" required={true}/>
-        <TextField label="Password" name="password" type="password" required={true}/>
+        <TextField label="Username" name="username" error={!!actionData?.formErrors?.username}
+                   helperText={actionData?.formErrors?.username}/>
+        <TextField label="Password" name="password" type="password" error={!!actionData?.formErrors?.password}
+                   helperText={actionData?.formErrors?.password}/>
         <Button variant="contained" type="submit">Login</Button>
         {actionData?.error &&
           <Alert severity="error">
+            {actionData?.formErrors?.username}
             {actionData.error}
           </Alert>
         }
@@ -47,12 +50,27 @@ export default function LoginPage() {
 }
 
 export async function loginAction({request}: ActionFunctionArgs) {
-  const data = await request.formData();
+  const formData = await request.formData();
 
   const loginData: LoginFormData = {
-    username: data.get("username") as string,
-    password: data.get("password") as string,
+    username: formData.get("username") as string,
+    password: formData.get("password") as string,
   };
+
+  const formErrors: Partial<LoginFormData> = {};
+
+  if (loginData.username.length < 3 || loginData.username.length > 50) {
+    formErrors.username = "Username should be from 3 to 50 characters";
+  }
+
+  if (loginData.password.length < 3) {
+    // short passwords temporarily allowed for development purposes
+    formErrors.password = "Password should be at least 3 characters";
+  }
+
+  if (Object.keys(formErrors).length > 0) {
+    return data({formErrors}, {status: 400});
+  }
 
   try {
     const response = await api.post("/auth/login", loginData)
