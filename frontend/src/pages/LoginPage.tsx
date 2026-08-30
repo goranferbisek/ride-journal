@@ -1,5 +1,5 @@
 import {Alert, Button, Container, Stack, TextField} from "@mui/material";
-import {type ActionFunctionArgs, Form, useActionData, useNavigate, data} from "react-router";
+import {type ActionFunctionArgs, Form, useActionData, useNavigate, data, useNavigation} from "react-router";
 import api, {setAuthToken} from "../api/client.ts";
 import axios from "axios";
 import {useEffect} from "react";
@@ -18,8 +18,11 @@ type ApiError = {
 export default function LoginPage() {
   const actionData = useActionData();
   const navigate = useNavigate();
+  const navigation = useNavigation();
   const {loginSuccess} = useAuth();
   const redirectPath = sessionStorage.getItem("redirectPath") || "/garage";
+
+  const isSubmitting = navigation.state === "submitting";
 
   useEffect(() => {
     if (actionData?.success) {
@@ -37,7 +40,9 @@ export default function LoginPage() {
                    helperText={actionData?.formErrors?.username}/>
         <TextField label="Password" name="password" type="password" error={!!actionData?.formErrors?.password}
                    helperText={actionData?.formErrors?.password}/>
-        <Button variant="contained" type="submit">Login</Button>
+        <Button variant="contained" type="submit" loading={isSubmitting}>
+          {isSubmitting ? "Authenticating..." : "Login"}
+        </Button>
         {actionData?.error &&
           <Alert severity="error">
             {actionData?.formErrors?.username}
