@@ -1,15 +1,14 @@
-package si.ferbisek.ride_journal.rest;
+package si.ferbisek.ride_journal.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import si.ferbisek.ride_journal.exception.UsernameAlreadyExistsException;
 
 @ControllerAdvice
 @Slf4j
-public class ErrorController {
+public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
