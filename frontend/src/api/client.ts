@@ -13,7 +13,7 @@ const api: AxiosInstance = axios.create({
   headers: {
     Accept: "application/json"
   },
-  timeout: 5000,
+  timeout: 10000,
 });
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
@@ -28,7 +28,9 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       setAuthToken(null);
-      window.location.href = "/login";
+      if (!error.config?.url?.includes("/auth/login")) {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }

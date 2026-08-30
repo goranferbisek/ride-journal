@@ -1,4 +1,4 @@
-import {Button, Container, Stack, TextField} from "@mui/material";
+import {Alert, Button, Container, Stack, TextField} from "@mui/material";
 import {type ActionFunctionArgs, Form, useActionData, useNavigate} from "react-router";
 import api, {setAuthToken} from "../api/client.ts";
 import axios from "axios";
@@ -22,13 +22,10 @@ export default function LoginPage() {
   const redirectPath = sessionStorage.getItem("redirectPath") || "/garage";
 
   useEffect(() => {
-    if (!actionData) return;
-    if (actionData.success) {
+    if (actionData?.success) {
       loginSuccess(actionData.jwtToken, actionData.user);
       sessionStorage.removeItem("redirectPath");
       navigate(redirectPath);
-    } else if (actionData.error) {
-      // TODO display error message
     }
   }, [actionData]);
 
@@ -36,9 +33,14 @@ export default function LoginPage() {
     <Form method="POST">
       <Stack spacing={2}>
         <h2>Login</h2>
-        <TextField label="Username" name="username"/>
-        <TextField label="Password" name="password" type="password"/>
+        <TextField label="Username" name="username" required={true}/>
+        <TextField label="Password" name="password" type="password" required={true}/>
         <Button variant="contained" type="submit">Login</Button>
+        {actionData?.error &&
+          <Alert severity="error">
+            {actionData.error}
+          </Alert>
+        }
       </Stack>
     </Form>
   </Container>
@@ -65,7 +67,8 @@ export async function loginAction({request}: ActionFunctionArgs) {
           error: "Invalid username or password" // replace this with error message from the backend
         }
       }
-      return {error: error.response?.data?.message ?? "An error occurred"}
+      // display message on Login page instead of triggering React Router ErrorBoundary
+      return {error: "An error occurred"}
     }
     throw error;
   }
