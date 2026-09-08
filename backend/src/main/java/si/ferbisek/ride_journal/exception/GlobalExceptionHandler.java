@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUsernameAlreadyExistsException() {
         log.warn("Username already exists");
 
-        // should return an error object with field specific messages
+        // TODO should return an error object with field specific messages
         return new ResponseEntity<>("Username already exists", HttpStatus.CONFLICT);
     }
 }
