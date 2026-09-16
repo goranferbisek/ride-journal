@@ -41,27 +41,21 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            UserDetails userDetails = authService.authenticate(
-                    loginRequest.getUsername(),
-                    loginRequest.getPassword()
-            );
+        UserDetails userDetails = authService.authenticate(
+                loginRequest.getUsername(),
+                loginRequest.getPassword()
+        );
 
-            TokenWithExpiresAt tokenWithExpiresAt = jwtTokenProvider.generateJwtToken(userDetails);
+        TokenWithExpiresAt tokenWithExpiresAt = jwtTokenProvider.generateJwtToken(userDetails);
 
-            UserDto userDto = new UserDto();
-            userDto.setUsername(loginRequest.getUsername());
-            LoginResponse loginResponse = new LoginResponse(
-                    tokenWithExpiresAt.jwtToken(),
-                    tokenWithExpiresAt.expiresAt(),
-                    userDto);
+        UserDto userDto = new UserDto();
+        userDto.setUsername(loginRequest.getUsername());
+        LoginResponse loginResponse = new LoginResponse(
+                tokenWithExpiresAt.jwtToken(),
+                tokenWithExpiresAt.expiresAt(),
+                userDto);
 
-            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
-        } catch (AuthenticationException exception) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
-
 
 }
