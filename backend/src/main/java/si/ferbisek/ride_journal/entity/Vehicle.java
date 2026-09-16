@@ -1,8 +1,6 @@
 package si.ferbisek.ride_journal.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,11 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "vehicles")
 public class Vehicle extends BaseEntity {
 
-    @Column(name = "user_id", nullable = false)
-    private User userId; // TODO make this a foreign key
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(length = 100, nullable = false)
     private String brand;
@@ -28,10 +27,10 @@ public class Vehicle extends BaseEntity {
     @Column(nullable = true)
     private int year;
 
-    @Column(name = "license_plate",length = 20, nullable = true)
+    @Column(name = "license_plate", length = 20, nullable = true)
     private String licensePlate;
 
-    @Column(name="vin", length = 17, nullable = true)
+    @Column(name = "vin", length = 17, nullable = true)
     private String vinNumber;
 
     //TODO cratedAt, updatedAt
