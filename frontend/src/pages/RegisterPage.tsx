@@ -3,9 +3,8 @@ import {type ActionFunctionArgs, Form, useActionData, useNavigate, data, useNavi
 import api, {setAuthToken} from "../api/client.ts";
 import axios from "axios";
 import {useEffect} from "react";
-import {useAuth} from "../auth/AuthContext.tsx";
 
-interface LoginFormData {
+interface RegisterFormData {
   username: string;
   password: string;
 }
@@ -19,15 +18,12 @@ export default function RegisterPage() {
   const actionData = useActionData();
   const navigate = useNavigate();
   const navigation = useNavigation();
-  const {loginSuccess} = useAuth();
   const redirectPath = "/login";
 
   const isSubmitting = navigation.state === "submitting";
 
   useEffect(() => {
     if (actionData?.success) {
-      loginSuccess(actionData.jwtToken, actionData.user);
-      sessionStorage.removeItem("redirectPath");
       navigate(redirectPath);
     }
   }, [actionData]);
@@ -60,18 +56,18 @@ export default function RegisterPage() {
 export async function registerAction({request}: ActionFunctionArgs) {
   const formData = await request.formData();
 
-  const loginData: LoginFormData = {
+  const registerData: RegisterFormData = {
     username: formData.get("username") as string,
     password: formData.get("password") as string,
   };
 
-  const formErrors: Partial<LoginFormData> = {};
+  const formErrors: Partial<RegisterFormData> = {};
 
-  if (loginData.username.length < 3 || loginData.username.length > 50) {
+  if (registerData.username.length < 3 || registerData.username.length > 50) {
     formErrors.username = "Username should be from 3 to 50 characters";
   }
 
-  if (loginData.password.length < 3) {
+  if (registerData.password.length < 3) {
     // short passwords temporarily allowed for development purposes
     formErrors.password = "Password should be at least 3 characters";
   }
@@ -81,7 +77,7 @@ export async function registerAction({request}: ActionFunctionArgs) {
   }
 
   try {
-    const response = await api.post("/auth/login", loginData)
+    const response = await api.post("/auth/register", registerData)
     const {jwtToken, user} = response.data;
     setAuthToken(jwtToken);
     return {success: true, jwtToken, user};
