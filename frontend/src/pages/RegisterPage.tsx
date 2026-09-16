@@ -70,11 +70,10 @@ export async function registerAction({request}: ActionFunctionArgs) {
   }
 
   if (registerData.password.length < 8) {
-    // short passwords temporarily allowed for development purposes
     formErrors.password = "Password should be at least 8 characters";
   }
 
-  if (registerData.confirmPassword.length < 8 ) {
+  if (registerData.confirmPassword.length < 8) {
     formErrors.confirmPassword = "Password should be at least 8 characters";
   }
 
@@ -99,10 +98,13 @@ export async function registerAction({request}: ActionFunctionArgs) {
         }
       }
       if (error.response?.status === 409) {
-        return {
-          success: false,
-          error: error.response?.data.message
-        }
+        return data(
+          {
+            formErrors: {
+              username: error.response?.data.message
+            }
+          },
+          {status: 409});
       }
       // display message on Login page instead of triggering React Router ErrorBoundary
       return {error: "An error occurred"}
