@@ -1,12 +1,13 @@
 import {Alert, Button, Container, Stack, TextField} from "@mui/material";
 import {type ActionFunctionArgs, Form, useActionData, useNavigate, data, useNavigation} from "react-router";
-import api, {setAuthToken} from "../api/client.ts";
+import api from "../api/client.ts";
 import axios from "axios";
 import {useEffect} from "react";
 
 interface RegisterFormData {
   username: string;
   password: string;
+  confirmPassword: string;
 }
 
 type ApiError = {
@@ -38,7 +39,7 @@ export default function RegisterPage() {
                    helperText={actionData?.formErrors?.password}/>
         <TextField label="Confirm Password" name="confirm-password" type="password"
                    error={!!actionData?.formErrors?.confirmPassword}
-                   helperText={actionData?.formErrors?.password}/>
+                   helperText={actionData?.formErrors?.confirmPassword}/>
         <Button variant="contained" type="submit" loading={isSubmitting}>
           {isSubmitting ? "Creating account..." : "Register"}
         </Button>
@@ -59,6 +60,7 @@ export async function registerAction({request}: ActionFunctionArgs) {
   const registerData: RegisterFormData = {
     username: formData.get("username") as string,
     password: formData.get("password") as string,
+    confirmPassword: formData.get("password") as string,
   };
 
   const formErrors: Partial<RegisterFormData> = {};
@@ -72,21 +74,34 @@ export async function registerAction({request}: ActionFunctionArgs) {
     formErrors.password = "Password should be at least 3 characters";
   }
 
+  if (registerData.confirmPassword.length < 3 ) {
+    formErrors.confirmPassword = "Password should be at least 3 characters";
+  }
+
+  if (registerData.password !== registerData.confirmPassword) {
+    formErrors.confirmPassword = "Password and Confirm password do not match";
+  }
+
   if (Object.keys(formErrors).length > 0) {
     return data({formErrors}, {status: 400});
   }
 
   try {
     const response = await api.post("/auth/register", registerData)
-    const {jwtToken, user} = response.data;
-    setAuthToken(jwtToken);
-    return {success: true, jwtToken, user};
+    const {username} = response.data;
+    return {success: true, username};
   } catch (error) {
     if (axios.isAxiosError<ApiError>(error)) {
       if (error.response?.status === 401) {
         return {
           success: false,
           error: "Invalid username or password" // replace this with error message from the backend
+        }
+      }
+      if (error.response?.status === 409) {
+        return {
+          success: false,
+          error: error.response?.data.message
         }
       }
       // display message on Login page instead of triggering React Router ErrorBoundary
