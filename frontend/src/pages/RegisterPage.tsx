@@ -60,7 +60,7 @@ export async function registerAction({request}: ActionFunctionArgs) {
   const registerData: RegisterFormData = {
     username: formData.get("username") as string,
     password: formData.get("password") as string,
-    confirmPassword: formData.get("password") as string,
+    confirmPassword: formData.get("confirm-password") as string,
   };
 
   const formErrors: Partial<RegisterFormData> = {};
@@ -69,13 +69,13 @@ export async function registerAction({request}: ActionFunctionArgs) {
     formErrors.username = "Username should be from 3 to 50 characters";
   }
 
-  if (registerData.password.length < 3) {
+  if (registerData.password.length < 8) {
     // short passwords temporarily allowed for development purposes
-    formErrors.password = "Password should be at least 3 characters";
+    formErrors.password = "Password should be at least 8 characters";
   }
 
-  if (registerData.confirmPassword.length < 3 ) {
-    formErrors.confirmPassword = "Password should be at least 3 characters";
+  if (registerData.confirmPassword.length < 8 ) {
+    formErrors.confirmPassword = "Password should be at least 8 characters";
   }
 
   if (registerData.password !== registerData.confirmPassword) {

@@ -68,9 +68,9 @@ export async function loginAction({request}: ActionFunctionArgs) {
     formErrors.username = "Username should be from 3 to 50 characters";
   }
 
-  if (loginData.password.length < 3) {
+  if (loginData.password.length < 8) {
     // short passwords temporarily allowed for development purposes
-    formErrors.password = "Password should be at least 3 characters";
+    formErrors.password = "Password should be at least 8 characters";
   }
 
   if (Object.keys(formErrors).length > 0) {
