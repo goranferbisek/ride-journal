@@ -22,7 +22,9 @@ public class Vehicle extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String model;
 
-    // enum type (CAR, MOTORCYCLE, MOTORHOME, OTHER) // TODO turn this enum
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false, length = 20)
+    private VehicleType type;
 
     @Column(nullable = true)
     private int year;
