@@ -83,6 +83,17 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.path").value("/test/validate"));
     }
 
+    @Test
+    void unsupportedMethodReturns405WithErrorShape() throws Exception {
+        mockMvc.perform(post("/test/not-found"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.timestamp", notNullValue()))
+                .andExpect(jsonPath("$.status").value(405))
+                .andExpect(jsonPath("$.error").value("Method Not Allowed"))
+                .andExpect(jsonPath("$.message").value("Request method not supported"))
+                .andExpect(jsonPath("$.path").value("/test/not-found"));
+    }
+
     @RestController
     static class TestController {
 
