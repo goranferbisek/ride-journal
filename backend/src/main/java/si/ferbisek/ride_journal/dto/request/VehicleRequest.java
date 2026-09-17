@@ -17,8 +17,8 @@ public class VehicleRequest {
     @Size(max = 50, message = "Brand must be between {min} and {max} characters")
     private String brand;
 
-    @NotBlank(message = "Brand is required")
-    @Size(min = 3, max = 50, message = "Brand must be between {min} and {max} characters")
+    @NotBlank(message = "Model is required")
+    @Size(min = 3, max = 50, message = "Model must be between {min} and {max} characters")
     private String model;
 
     @NotNull(message = "Vehicle type is mandatory")

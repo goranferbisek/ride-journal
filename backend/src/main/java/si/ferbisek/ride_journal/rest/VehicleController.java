@@ -96,4 +96,10 @@ public class VehicleController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(cratedVehicleResponse);
     }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> remove(@PathVariable Long id) {
+        vehicleService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
