@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "vehicles")
-public class Vehicle extends BaseEntity {
+public class Vehicle extends AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -35,5 +35,4 @@ public class Vehicle extends BaseEntity {
     @Column(name = "vin", length = 17, nullable = true)
     private String vinNumber;
 
-    //TODO cratedAt, updatedAt
 }
