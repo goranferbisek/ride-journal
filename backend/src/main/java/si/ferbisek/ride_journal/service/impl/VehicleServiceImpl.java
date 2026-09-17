@@ -7,6 +7,7 @@ import si.ferbisek.ride_journal.repository.VehicleRepository;
 import si.ferbisek.ride_journal.service.VehicleService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,7 +21,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicle getByIdForUser(Long vehicleId, Long userId) {
-        return vehicleRepository.getByIdAndUser_Id(vehicleId, userId);
+    public Optional<Vehicle> getByIdForUser(Long vehicleId, Long userId) {
+        return Optional.ofNullable(vehicleRepository.getByIdAndUser_Id(vehicleId, userId));
     }
 }
