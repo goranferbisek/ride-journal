@@ -26,13 +26,12 @@ public class Vehicle extends AuditableEntity {
     @Column(name = "type", nullable = false, length = 20)
     private VehicleType type;
 
-    @Column(nullable = true)
     private int year;
 
-    @Column(name = "license_plate", length = 20, nullable = true)
+    @Column(name = "license_plate", length = 20)
     private String licensePlate;
 
-    @Column(name = "vin", length = 17, nullable = true)
+    @Column(name = "vin", length = 17)
     private String vinNumber;
 
 }
