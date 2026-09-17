@@ -31,7 +31,7 @@ public class Vehicle extends AuditableEntity {
     @Column(name = "type", nullable = false, length = 20)
     private VehicleType type;
 
-    private int year;
+    private Integer year;
 
     @Column(name = "license_plate", length = 20)
     private String licensePlate;
