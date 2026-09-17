@@ -1,14 +1,14 @@
 package si.ferbisek.ride_journal.rest;
 
-import jakarta.websocket.server.PathParam;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import si.ferbisek.ride_journal.dto.request.VehicleRequest;
 import si.ferbisek.ride_journal.dto.response.VehicleResponse;
+import si.ferbisek.ride_journal.entity.User;
 import si.ferbisek.ride_journal.entity.Vehicle;
 import si.ferbisek.ride_journal.exception.ResourceNotFoundException;
 import si.ferbisek.ride_journal.security.CustomUserDetails;
@@ -44,7 +44,8 @@ public class VehicleController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<VehicleResponse> getUsersVehicleById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails currentUser) {
+    public ResponseEntity<VehicleResponse> getUsersVehicleById(@PathVariable Long id,
+                                                               @AuthenticationPrincipal CustomUserDetails currentUser) {
         Optional<Vehicle> vehicleOptional = vehicleService.getByIdForUser(id, currentUser.getId());
 
         if (vehicleOptional.isPresent()) {
@@ -63,5 +64,36 @@ public class VehicleController {
         } else {
             throw new ResourceNotFoundException("Vehicle with id = " + id + " not found");
         }
+    }
+
+    @PostMapping
+    public ResponseEntity<VehicleResponse> crateNewVehicle(@Valid @RequestBody VehicleRequest vehicleRequest,
+                                                           @AuthenticationPrincipal CustomUserDetails currentUser) {
+        User user = new User();
+        user.setId(currentUser.getId());
+
+        Vehicle newVehicle = new Vehicle(
+                user,
+                vehicleRequest.getBrand(),
+                vehicleRequest.getModel(),
+                vehicleRequest.getType(),
+                vehicleRequest.getYear(),
+                vehicleRequest.getLicensePlate(),
+                vehicleRequest.getVinNumber()
+        );
+
+        Vehicle cratedVehicle = vehicleService.create(newVehicle);
+
+        VehicleResponse cratedVehicleResponse = new VehicleResponse(
+                cratedVehicle.getId(),
+                cratedVehicle.getBrand(),
+                cratedVehicle.getModel(),
+                cratedVehicle.getType(),
+                cratedVehicle.getYear(),
+                cratedVehicle.getLicensePlate(),
+                cratedVehicle.getVinNumber()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(cratedVehicleResponse);
     }
 }

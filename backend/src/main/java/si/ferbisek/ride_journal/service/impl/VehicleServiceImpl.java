@@ -24,4 +24,19 @@ public class VehicleServiceImpl implements VehicleService {
     public Optional<Vehicle> getByIdForUser(Long vehicleId, Long userId) {
         return Optional.ofNullable(vehicleRepository.getByIdAndUser_Id(vehicleId, userId));
     }
+
+    @Override
+    public Vehicle create(Vehicle vehicle) {
+        return vehicleRepository.save(vehicle);
+    }
+
+    @Override
+    public Vehicle update(Long id, Vehicle vehicle) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+        vehicleRepository.deleteById(id);
+    }
 }
