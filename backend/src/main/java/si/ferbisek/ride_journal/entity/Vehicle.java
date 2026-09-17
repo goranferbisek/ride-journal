@@ -9,7 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "vehicles")
+@Table(
+        name = "vehicles",
+        indexes = {
+                @Index(name="ix_vehicles_user_id", columnList = "user_id")
+        }
+)
 public class Vehicle extends AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
