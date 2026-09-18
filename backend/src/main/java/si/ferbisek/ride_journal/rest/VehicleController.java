@@ -135,8 +135,8 @@ public class VehicleController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> remove(@PathVariable Long id) {
-        vehicleService.delete(id);
+    public ResponseEntity<Void> remove(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails currentUser) {
+        vehicleService.deleteByIdForUser(id, currentUser.getId());
         return ResponseEntity.noContent().build();
     }
 }

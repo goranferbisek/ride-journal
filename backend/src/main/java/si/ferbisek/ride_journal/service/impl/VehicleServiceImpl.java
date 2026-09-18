@@ -37,7 +37,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void delete(Long id) {
-        vehicleRepository.deleteById(id);
+    public void deleteByIdForUser(Long vehicleId, Long userId) {
+        vehicleRepository.deleteByIdAndUser_Id(vehicleId, userId);
     }
 }

@@ -10,5 +10,5 @@ public interface VehicleService {
     Optional<Vehicle> getByIdForUser(Long vehicleId, Long userId);
     Vehicle create(Vehicle vehicle);
     Vehicle update(Long id, Vehicle vehicle);
-    void delete(Long id);
+    void deleteByIdForUser(Long vehicleId, Long userId);
 }
