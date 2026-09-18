@@ -32,7 +32,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle update(Long id, Vehicle vehicle) {
-        return null;
+        vehicle.setId(id);
+        return vehicleRepository.save(vehicle);
     }
 
     @Override

@@ -97,6 +97,43 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cratedVehicleResponse);
     }
 
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<VehicleResponse> fullUpdate(@PathVariable Long id,
+                                                      @Valid @RequestBody VehicleRequest vehicleRequest,
+                                                      @AuthenticationPrincipal CustomUserDetails currentUser) {
+        Optional<Vehicle> existingVehicleOptional = vehicleService.getByIdForUser(id, currentUser.getId());
+        if (existingVehicleOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Vehicle with id = " + id + " not found");
+        }
+
+        User user = new User();
+        user.setId(currentUser.getId());
+
+        Vehicle newVehicle = new Vehicle(
+                user,
+                vehicleRequest.getBrand(),
+                vehicleRequest.getModel(),
+                vehicleRequest.getType(),
+                vehicleRequest.getYear(),
+                vehicleRequest.getLicensePlate(),
+                vehicleRequest.getVinNumber()
+        );
+
+        Vehicle updatedVehicle = vehicleService.update(id, newVehicle);
+
+        VehicleResponse updatedVehicleResponse = new VehicleResponse(
+                updatedVehicle.getId(),
+                updatedVehicle.getBrand(),
+                updatedVehicle.getModel(),
+                updatedVehicle.getType(),
+                updatedVehicle.getYear(),
+                updatedVehicle.getLicensePlate(),
+                updatedVehicle.getVinNumber()
+        );
+
+        return ResponseEntity.ok(updatedVehicleResponse);
+    }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {
         vehicleService.delete(id);
