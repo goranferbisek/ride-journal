@@ -2,6 +2,7 @@ package si.ferbisek.ride_journal.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import si.ferbisek.ride_journal.entity.Vehicle;
 import si.ferbisek.ride_journal.repository.VehicleRepository;
 import si.ferbisek.ride_journal.service.VehicleService;
@@ -37,6 +38,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    @Transactional
     public void deleteByIdForUser(Long vehicleId, Long userId) {
         vehicleRepository.deleteByIdAndUser_Id(vehicleId, userId);
     }
