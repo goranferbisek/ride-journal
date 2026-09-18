@@ -1,8 +1,6 @@
 package si.ferbisek.ride_journal.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import si.ferbisek.ride_journal.entity.VehicleType;
 
@@ -24,13 +22,14 @@ public class VehicleRequest {
     @NotNull(message = "Vehicle type is mandatory")
     private VehicleType type;
 
-    // 1900 - 2027
+    @Min(1900)
+    @Max(2026)
     private Integer year;
 
-    @Size(max = 50, message = "License plate number is {max} characters max")
+    @Size(max = 20, message = "License plate number is {max} characters max")
     private String licensePlate;
 
-    // exactly 17 chars
+    @Size(min = 17, max = 17, message = "VIN number must be exactly 17 characters")
     private String vinNumber;
 
 }
