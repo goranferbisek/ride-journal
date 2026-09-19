@@ -2,7 +2,7 @@ package si.ferbisek.ride_journal.mapper;
 
 import org.mapstruct.*;
 import si.ferbisek.ride_journal.dto.request.VehicleRequest;
-import si.ferbisek.ride_journal.dto.response.VehicleResponse;
+import si.ferbisek.ride_journal.dto.VehicleDto;
 import si.ferbisek.ride_journal.entity.User;
 import si.ferbisek.ride_journal.entity.Vehicle;
 
@@ -14,9 +14,9 @@ import java.util.List;
 )
 public interface VehicleMapper {
 
-    VehicleResponse toResponse(Vehicle vehicle);
+    VehicleDto toResponse(Vehicle vehicle);
 
-    List<VehicleResponse> toResponses(List<Vehicle> vehicles);
+    List<VehicleDto> toResponses(List<Vehicle> vehicles);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

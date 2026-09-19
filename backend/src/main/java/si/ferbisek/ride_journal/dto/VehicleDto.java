@@ -1,15 +1,16 @@
-package si.ferbisek.ride_journal.dto.response;
+package si.ferbisek.ride_journal.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import si.ferbisek.ride_journal.entity.VehicleType;
 
-public record VehicleResponse(
+import java.time.Instant;
+
+public record VehicleDto(
         Long id,
         String brand,
         String model,
         VehicleType type,
         Integer year,
         String licensePlate,
-        @JsonProperty("vin")
-        String vinNumber
+        String vin,
+        Instant createdAt
 ) {}

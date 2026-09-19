@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import si.ferbisek.ride_journal.dto.VehicleDto;
 import si.ferbisek.ride_journal.dto.request.VehicleRequest;
-import si.ferbisek.ride_journal.dto.response.VehicleResponse;
 import si.ferbisek.ride_journal.entity.User;
 import si.ferbisek.ride_journal.entity.Vehicle;
 import si.ferbisek.ride_journal.exception.ResourceNotFoundException;
@@ -26,14 +26,14 @@ public class VehicleController {
     private final VehicleMapper vehicleMapper;
 
     @GetMapping
-    public ResponseEntity<List<VehicleResponse>> getAllVehiclesForUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
+    public ResponseEntity<List<VehicleDto>> getAllVehiclesForUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         List<Vehicle> usersVehicles = vehicleService.getAllForUser(currentUser.getId());
         return ResponseEntity.ok(vehicleMapper.toResponses(usersVehicles));
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<VehicleResponse> getUsersVehicleById(@PathVariable Long id,
-                                                               @AuthenticationPrincipal CustomUserDetails currentUser) {
+    public ResponseEntity<VehicleDto> getUsersVehicleById(@PathVariable Long id,
+                                                          @AuthenticationPrincipal CustomUserDetails currentUser) {
         Vehicle vehicle = vehicleService.getByIdForUser(id, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Vehicle with id = " + id + " not found")
@@ -43,8 +43,8 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<VehicleResponse> crateNewVehicle(@Valid @RequestBody VehicleRequest vehicleRequest,
-                                                           @AuthenticationPrincipal CustomUserDetails currentUser) {
+    public ResponseEntity<VehicleDto> crateNewVehicle(@Valid @RequestBody VehicleRequest vehicleRequest,
+                                                      @AuthenticationPrincipal CustomUserDetails currentUser) {
         User user = new User();
         user.setId(currentUser.getId());
         Vehicle newVehicle = vehicleMapper.toEntity(vehicleRequest, user);
@@ -54,9 +54,9 @@ public class VehicleController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<VehicleResponse> fullUpdate(@PathVariable Long id,
-                                                      @Valid @RequestBody VehicleRequest vehicleRequest,
-                                                      @AuthenticationPrincipal CustomUserDetails currentUser) {
+    public ResponseEntity<VehicleDto> fullUpdate(@PathVariable Long id,
+                                                 @Valid @RequestBody VehicleRequest vehicleRequest,
+                                                 @AuthenticationPrincipal CustomUserDetails currentUser) {
         Vehicle vehicle = vehicleService.getByIdForUser(id, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Vehicle with id = " + id + " not found")

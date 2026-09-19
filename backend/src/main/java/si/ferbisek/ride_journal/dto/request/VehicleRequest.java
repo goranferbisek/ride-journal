@@ -1,6 +1,5 @@
 package si.ferbisek.ride_journal.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import si.ferbisek.ride_journal.entity.VehicleType;
@@ -29,7 +28,6 @@ public class VehicleRequest {
     private String licensePlate;
 
     @Size(min = 17, max = 17, message = "VIN number must be exactly 17 characters")
-    @JsonProperty("vin")
-    private String vinNumber;
+    private String vin;
 
 }
