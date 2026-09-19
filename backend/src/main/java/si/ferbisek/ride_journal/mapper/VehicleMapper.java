@@ -1,9 +1,6 @@
 package si.ferbisek.ride_journal.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import si.ferbisek.ride_journal.dto.request.VehicleRequest;
 import si.ferbisek.ride_journal.dto.response.VehicleResponse;
 import si.ferbisek.ride_journal.entity.User;
@@ -26,4 +23,11 @@ public interface VehicleMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "user", source = "user")
     Vehicle toEntity(VehicleRequest vehicleRequest, User user);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    void updateEntity(VehicleRequest request, @MappingTarget Vehicle vehicle);
+
 }

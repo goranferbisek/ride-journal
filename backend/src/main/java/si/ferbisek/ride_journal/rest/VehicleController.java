@@ -16,7 +16,6 @@ import si.ferbisek.ride_journal.security.CustomUserDetails;
 import si.ferbisek.ride_journal.service.VehicleService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,13 +34,12 @@ public class VehicleController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<VehicleResponse> getUsersVehicleById(@PathVariable Long id,
                                                                @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Optional<Vehicle> vehicleOptional = vehicleService.getByIdForUser(id, currentUser.getId());
+        Vehicle vehicle = vehicleService.getByIdForUser(id, currentUser.getId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Vehicle with id = " + id + " not found")
+                );
 
-        if (vehicleOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Vehicle with id = " + id + " not found");
-        }
-
-        return ResponseEntity.ok(vehicleMapper.toResponse(vehicleOptional.get()));
+        return ResponseEntity.ok(vehicleMapper.toResponse(vehicle));
     }
 
     @PostMapping
@@ -59,16 +57,13 @@ public class VehicleController {
     public ResponseEntity<VehicleResponse> fullUpdate(@PathVariable Long id,
                                                       @Valid @RequestBody VehicleRequest vehicleRequest,
                                                       @AuthenticationPrincipal CustomUserDetails currentUser) {
-        Optional<Vehicle> existingVehicleOptional = vehicleService.getByIdForUser(id, currentUser.getId());
-        if (existingVehicleOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Vehicle with id = " + id + " not found");
-        }
+        Vehicle vehicle = vehicleService.getByIdForUser(id, currentUser.getId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Vehicle with id = " + id + " not found")
+                );
 
-        User user = new User();
-        user.setId(currentUser.getId());
-        Vehicle newVehicle = vehicleMapper.toEntity(vehicleRequest, user);
-
-        Vehicle updatedVehicle = vehicleService.update(id, newVehicle);
+        vehicleMapper.updateEntity(vehicleRequest, vehicle);
+        Vehicle updatedVehicle = vehicleService.update(id, vehicle);
 
         return ResponseEntity.ok(vehicleMapper.toResponse(updatedVehicle));
     }
