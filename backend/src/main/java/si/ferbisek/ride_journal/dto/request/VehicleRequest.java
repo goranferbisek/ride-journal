@@ -10,11 +10,11 @@ import si.ferbisek.ride_journal.entity.VehicleType;
 public class VehicleRequest {
 
     @NotBlank(message = "Brand is required")
-    @Size(max = 50, message = "Brand must be between {min} and {max} characters")
+    @Size(max = 50, message = "Brand must be {max} characters max")
     private String brand;
 
     @NotBlank(message = "Model is required")
-    @Size(min = 3, max = 50, message = "Model must be between {min} and {max} characters")
+    @Size(max = 50, message = "Model must be {max} characters max")
     private String model;
 
     @NotNull(message = "Vehicle type is mandatory")
@@ -24,7 +24,7 @@ public class VehicleRequest {
     @Max(2026)
     private Integer year;
 
-    @Size(max = 20, message = "License plate number is {max} characters max")
+    @Size(max = 20, message = "License plate number must be {max} characters max")
     private String licensePlate;
 
     @Size(min = 17, max = 17, message = "VIN number must be exactly 17 characters")
