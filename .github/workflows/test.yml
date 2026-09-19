@@ -30,7 +30,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
-      - run: ./gradlew test build
+      - name: Build and test backend
+        run: ./gradlew clean build
+      - name: Verify MapStruct generation
+        run: test -f build/generated/sources/annotationProcessor/java/main/si/ferbisek/ride_journal/mapper/VehicleMapperImpl.java
       - uses: actions/upload-artifact@v5
         with:
           name: backend-jar

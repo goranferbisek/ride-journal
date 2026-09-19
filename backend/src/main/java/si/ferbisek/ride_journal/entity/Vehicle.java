@@ -1,11 +1,13 @@
 package si.ferbisek.ride_journal.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -37,6 +39,6 @@ public class Vehicle extends AuditableEntity {
     private String licensePlate;
 
     @Column(name = "vin", length = 17)
-    private String vinNumber;
+    private String vin;
 
 }

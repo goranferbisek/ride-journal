@@ -47,7 +47,7 @@ service layer does.
 
 ## 2. REST API
 
-All endpoints except `/api/auth/**` require `Authorization: Bearer <jwt>`.
+All endpoints except `/api/v1/auth/**` require `Authorization: Bearer <jwt>`.
 All vehicle/event endpoints are scoped to the authenticated user — a request
 for another user's vehicle/event returns 404 (not 403, to avoid leaking
 existence).
@@ -55,17 +55,17 @@ existence).
 ### Auth
 | Method | Path | Body | Response |
 |---|---|---|---|
-| POST | `/api/auth/register` | `{username, password}` | 201, `{id, username}` |
-| POST | `/api/auth/login` | `{username, password}` | 200, `{token, expiresAt}` |
+| POST | `/api/v1/auth/register` | `{username, password}` | 201, `{id, username}` |
+| POST | `/api/v1/auth/login` | `{username, password}` | 200, `{token, expiresAt}` |
 
 ### Vehicles
 | Method | Path | Body | Response |
 |---|---|---|---|
-| GET | `/api/vehicles` | — | 200, `[VehicleDto]` |
-| POST | `/api/vehicles` | `VehicleRequest` | 201, `VehicleDto` |
-| GET | `/api/vehicles/{id}` | — | 200, `VehicleDto` |
-| PUT | `/api/vehicles/{id}` | `VehicleRequest` | 200, `VehicleDto` |
-| DELETE | `/api/vehicles/{id}` | — | 204 |
+| GET | `/api/v1/vehicles` | — | 200, `[VehicleDto]` |
+| POST | `/api/v1/vehicles` | `VehicleRequest` | 201, `VehicleDto` |
+| GET | `/api/v1/vehicles/{id}` | — | 200, `VehicleDto` |
+| PUT | `/api/v1/vehicles/{id}` | `VehicleRequest` | 200, `VehicleDto` |
+| DELETE | `/api/v1/vehicles/{id}` | — | 204 |
 
 `VehicleRequest`: `{brand, model, type, year?, licensePlate?, vin?}`
 `VehicleDto`: same fields + `id`, `createdAt`.
@@ -73,11 +73,11 @@ existence).
 ### Events
 | Method | Path | Body | Response |
 |---|---|---|---|
-| GET | `/api/vehicles/{vehicleId}/events?eventType=&fromYear=&toYear=&page=&size=` | — | 200, `Page<EventDto>` |
-| POST | `/api/vehicles/{vehicleId}/events` | `EventRequest` | 201, `EventDto` |
-| GET | `/api/vehicles/{vehicleId}/events/{eventId}` | — | 200, `EventDto` |
-| PUT | `/api/vehicles/{vehicleId}/events/{eventId}` | `EventRequest` | 200, `EventDto` |
-| DELETE | `/api/vehicles/{vehicleId}/events/{eventId}` | — | 204 |
+| GET | `/api/v1/vehicles/{vehicleId}/events?eventType=&fromYear=&toYear=&page=&size=` | — | 200, `Page<EventDto>` |
+| POST | `/api/v1/vehicles/{vehicleId}/events` | `EventRequest` | 201, `EventDto` |
+| GET | `/api/v1/vehicles/{vehicleId}/events/{eventId}` | — | 200, `EventDto` |
+| PUT | `/api/v1/vehicles/{vehicleId}/events/{eventId}` | `EventRequest` | 200, `EventDto` |
+| DELETE | `/api/v1/vehicles/{vehicleId}/events/{eventId}` | — | 204 |
 
 `EventRequest`: `{date, eventType, odometerKm?, notes?}`
 `EventDto`: same fields + `id`.
@@ -87,8 +87,8 @@ omitting them returns everything (paged).
 ### Dashboard
 | Method | Path | Response |
 |---|---|---|
-| GET | `/api/vehicles/{vehicleId}/odometer-history?eventType=` | 200, `[{date, odometerKm, eventType}]` — only events with `odometerKm` set, sorted by date ascending. Feeds the line chart. |
-| GET | `/api/vehicles/{vehicleId}/yearly-km` | 200, `[{year, km}]` — `km` is `null` when fewer than 2 odometer-bearing events exist that year. |
+| GET | `/api/v1/vehicles/{vehicleId}/odometer-history?eventType=` | 200, `[{date, odometerKm, eventType}]` — only events with `odometerKm` set, sorted by date ascending. Feeds the line chart. |
+| GET | `/api/v1/vehicles/{vehicleId}/yearly-km` | 200, `[{year, km}]` — `km` is `null` when fewer than 2 odometer-bearing events exist that year. |
 
 ### Error format (all endpoints)
 ```json
@@ -97,7 +97,7 @@ omitting them returns everything (paged).
   "status": 400,
   "error": "Bad Request",
   "message": "odometerKm must be >= 0",
-  "path": "/api/vehicles/3/events"
+  "path": "/api/v1/vehicles/3/events"
 }
 ```
 Implemented via a single `@RestControllerAdvice` global exception handler.
