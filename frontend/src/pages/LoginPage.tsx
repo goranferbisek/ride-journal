@@ -69,7 +69,6 @@ export async function loginAction({request}: ActionFunctionArgs) {
   }
 
   if (loginData.password.length < 8) {
-    // short passwords temporarily allowed for development purposes
     formErrors.password = "Password should be at least 8 characters";
   }
 
