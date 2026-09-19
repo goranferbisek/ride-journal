@@ -11,6 +11,7 @@ import si.ferbisek.ride_journal.dto.response.VehicleResponse;
 import si.ferbisek.ride_journal.entity.User;
 import si.ferbisek.ride_journal.entity.Vehicle;
 import si.ferbisek.ride_journal.exception.ResourceNotFoundException;
+import si.ferbisek.ride_journal.mapper.VehicleMapper;
 import si.ferbisek.ride_journal.security.CustomUserDetails;
 import si.ferbisek.ride_journal.service.VehicleService;
 
@@ -23,24 +24,12 @@ import java.util.Optional;
 public class VehicleController {
 
     private final VehicleService vehicleService;
+    private final VehicleMapper vehicleMapper;
 
     @GetMapping
     public ResponseEntity<List<VehicleResponse>> getAllVehiclesForUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         List<Vehicle> usersVehicles = vehicleService.getAllForUser(currentUser.getId());
-
-        List<VehicleResponse> vehicleResponses = usersVehicles.stream().map(
-                vehicle -> new VehicleResponse(
-                        vehicle.getId(),
-                        vehicle.getBrand(),
-                        vehicle.getModel(),
-                        vehicle.getType(),
-                        vehicle.getYear(),
-                        vehicle.getLicensePlate(),
-                        vehicle.getVinNumber()
-                )
-        ).toList();
-
-        return ResponseEntity.ok(vehicleResponses);
+        return ResponseEntity.ok(vehicleMapper.toResponses(usersVehicles));
     }
 
     @GetMapping(path = "/{id}")
@@ -48,22 +37,11 @@ public class VehicleController {
                                                                @AuthenticationPrincipal CustomUserDetails currentUser) {
         Optional<Vehicle> vehicleOptional = vehicleService.getByIdForUser(id, currentUser.getId());
 
-        if (vehicleOptional.isPresent()) {
-            Vehicle vehicle = vehicleOptional.get();
-
-            VehicleResponse vehicleResponse = new VehicleResponse(
-                    vehicle.getId(),
-                    vehicle.getBrand(),
-                    vehicle.getModel(),
-                    vehicle.getType(),
-                    vehicle.getYear(),
-                    vehicle.getLicensePlate(),
-                    vehicle.getVinNumber()
-            );
-            return ResponseEntity.ok(vehicleResponse);
-        } else {
+        if (vehicleOptional.isEmpty()) {
             throw new ResourceNotFoundException("Vehicle with id = " + id + " not found");
         }
+
+        return ResponseEntity.ok(vehicleMapper.toResponse(vehicleOptional.get()));
     }
 
     @PostMapping
@@ -71,30 +49,10 @@ public class VehicleController {
                                                            @AuthenticationPrincipal CustomUserDetails currentUser) {
         User user = new User();
         user.setId(currentUser.getId());
-
-        Vehicle newVehicle = new Vehicle(
-                user,
-                vehicleRequest.getBrand(),
-                vehicleRequest.getModel(),
-                vehicleRequest.getType(),
-                vehicleRequest.getYear(),
-                vehicleRequest.getLicensePlate(),
-                vehicleRequest.getVinNumber()
-        );
+        Vehicle newVehicle = vehicleMapper.toEntity(vehicleRequest, user);
 
         Vehicle cratedVehicle = vehicleService.create(newVehicle);
-
-        VehicleResponse cratedVehicleResponse = new VehicleResponse(
-                cratedVehicle.getId(),
-                cratedVehicle.getBrand(),
-                cratedVehicle.getModel(),
-                cratedVehicle.getType(),
-                cratedVehicle.getYear(),
-                cratedVehicle.getLicensePlate(),
-                cratedVehicle.getVinNumber()
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(cratedVehicleResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(vehicleMapper.toResponse(cratedVehicle));
     }
 
     @PutMapping(path = "/{id}")
@@ -108,30 +66,11 @@ public class VehicleController {
 
         User user = new User();
         user.setId(currentUser.getId());
-
-        Vehicle newVehicle = new Vehicle(
-                user,
-                vehicleRequest.getBrand(),
-                vehicleRequest.getModel(),
-                vehicleRequest.getType(),
-                vehicleRequest.getYear(),
-                vehicleRequest.getLicensePlate(),
-                vehicleRequest.getVinNumber()
-        );
+        Vehicle newVehicle = vehicleMapper.toEntity(vehicleRequest, user);
 
         Vehicle updatedVehicle = vehicleService.update(id, newVehicle);
 
-        VehicleResponse updatedVehicleResponse = new VehicleResponse(
-                updatedVehicle.getId(),
-                updatedVehicle.getBrand(),
-                updatedVehicle.getModel(),
-                updatedVehicle.getType(),
-                updatedVehicle.getYear(),
-                updatedVehicle.getLicensePlate(),
-                updatedVehicle.getVinNumber()
-        );
-
-        return ResponseEntity.ok(updatedVehicleResponse);
+        return ResponseEntity.ok(vehicleMapper.toResponse(updatedVehicle));
     }
 
     @DeleteMapping(path = "/{id}")

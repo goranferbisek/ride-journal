@@ -6,8 +6,6 @@ import lombok.*;
 import si.ferbisek.ride_journal.entity.VehicleType;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class VehicleRequest {
