@@ -2,6 +2,7 @@ import {useQuery} from '@tanstack/react-query';
 import api from "../api/client.ts";
 import type {Vehicle} from "../types/vehicle.ts";
 import {Button, Container} from "@mui/material";
+import {Link} from "react-router";
 
 export default function GaragePage() {
   const {data: vehicles = [], isPending, isError, error} = useQuery({queryKey: ['vehicles'], queryFn: fetchVehicles})
@@ -17,7 +18,7 @@ export default function GaragePage() {
   return <>
     <Container>
       <h2>Garage</h2>
-      <Button href={""} variant="outlined">Add</Button>
+      <Button component={Link} to="/garage/add" variant="outlined">Add</Button>
 
       {vehicles.length == 0 ? (
         <div>You have no vehicles. Add a vehicle to your garage</div>

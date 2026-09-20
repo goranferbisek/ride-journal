@@ -4,6 +4,7 @@ import ProtectedRoute from "../auth/ProtectedRoute.tsx";
 import LoginPage, {loginAction} from "../pages/LoginPage.tsx";
 import GaragePage from "../pages/GaragePage.tsx";
 import RegisterPage, {registerAction} from "../pages/RegisterPage.tsx";
+import GarageAddEditPage from "../pages/GarageAddEditPage.tsx";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App/>}>
@@ -11,6 +12,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/register" element={<RegisterPage/>} action={registerAction}/>
     <Route element={<ProtectedRoute/>}>
       <Route path="/garage" element={<GaragePage/>}/>
+      <Route path="/garage/add" element={<GarageAddEditPage/>}/>
     </Route>
   </Route>
 );
