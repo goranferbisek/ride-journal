@@ -12,7 +12,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/register" element={<RegisterPage/>} action={registerAction}/>
     <Route element={<ProtectedRoute/>}>
       <Route path="/garage" element={<GaragePage/>}/>
-      <Route path="/garage/add" element={<GarageAddEditPage/>}/>
+      <Route path="/garage/vehicle/add" element={<GarageAddEditPage/>}/>
     </Route>
   </Route>
 );
