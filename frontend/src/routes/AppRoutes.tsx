@@ -13,6 +13,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route element={<ProtectedRoute/>}>
       <Route path="/garage" element={<GaragePage/>}/>
       <Route path="/garage/vehicle/add" element={<GarageAddEditPage/>}/>
+      <Route path="/garage/vehicle/:id/edit" element={<GarageAddEditPage/>}/>
     </Route>
   </Route>
 );
