@@ -68,15 +68,15 @@ export default function GarageAddEditPage() {
       <Typography variant="h4" sx={{mb: 4}}>
         {isEdit ? "Edit" : "Add"}
       </Typography>
-      <form onSubmit={handleSubmit}>
+      <form noValidate onSubmit={handleSubmit}>
         <Stack spacing={2}>
-          <TextField label="Vehicle Type" name="type" size="small"
+          <TextField required label="Vehicle Type" name="type" size="small"
                      defaultValue={vehicle ? vehicle.type : ""}  /*error={/*!!actionData?.formErrors?.username}*/
             /*helperText={actionData?.formErrors?.username} */ />
-          <TextField label="Brand" name="brand" size="small"
+          <TextField required label="Brand" name="brand" size="small"
                      defaultValue={vehicle ? vehicle.brand : ""} /*error={/*!!actionData?.formErrors?.username}*/
             /*helperText={actionData?.formErrors?.username} */ />
-          <TextField label="Model" name="model" size="small"
+          <TextField required label="Model" name="model" size="small"
                      defaultValue={vehicle ? vehicle.model : ""} /*error={/*!!actionData?.formErrors?.username}*/
             /*helperText={actionData?.formErrors?.username} */ />
           <TextField label="Year" name="year" size="small"
