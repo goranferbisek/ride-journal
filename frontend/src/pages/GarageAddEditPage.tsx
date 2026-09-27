@@ -1,9 +1,45 @@
-import {Button, Container, MenuItem, Stack, TextField, Typography} from "@mui/material";
+import {Alert, Button, Container, MenuItem, Stack, TextField, Typography} from "@mui/material";
 import {Link, useNavigate, useParams} from "react-router";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import api from "../api/client.ts";
 import {type Vehicle, VehicleType} from "../types/vehicle.ts";
 import type {SubmitEvent} from "react";
+import axios from "axios";
+
+type VehicleFormData = Omit<Vehicle, "id">;
+type FormErrors = Partial<Record<keyof VehicleFormData, string>>;
+
+function extractFormErrors(error: unknown): { formErrors: FormErrors; generalError?: string } {
+  if (!axios.isAxiosError<{ message?: string }>(error) || !error.response?.data?.message) {
+    if (axios.isAxiosError(error) && error.message) {
+      return { formErrors: {}, generalError: error.message };
+    }
+    return { formErrors: {} };
+  }
+
+  const message = error.response.data.message;
+  const formErrors: FormErrors = {};
+  const unmappedErrors: string[] = [];
+
+  const parts = message.split("; ");
+  for (const part of parts) {
+    const colonIndex = part.indexOf(": ");
+    if (colonIndex !== -1) {
+      const field = part.slice(0, colonIndex).trim() as keyof VehicleFormData;
+      const errorMsg = part.slice(colonIndex + 2).trim();
+      if (["type", "brand", "model", "year", "licensePlate", "vin"].includes(field)) {
+        formErrors[field] = errorMsg;
+        continue;
+      }
+    }
+    unmappedErrors.push(part);
+  }
+
+  return {
+    formErrors,
+    generalError: unmappedErrors.length > 0 ? unmappedErrors.join("; ") : undefined,
+  };
+}
 
 export default function GarageAddEditPage() {
   const {id} = useParams();
@@ -39,6 +75,8 @@ export default function GarageAddEditPage() {
     }
   })
 
+  const {formErrors, generalError} = extractFormErrors(saveVehicle.error);
+
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -71,9 +109,15 @@ export default function GarageAddEditPage() {
       </Typography>
       <form noValidate onSubmit={handleSubmit}>
         <Stack spacing={2}>
+          {generalError && (
+            <Alert severity="error">
+              {generalError}
+            </Alert>
+          )}
           <TextField select required label="Vehicle Type" name="type" size="small"
-                     defaultValue={vehicle ? vehicle.type : ""}  /*error={/*!!actionData?.formErrors?.username}*/
-            /*helperText={actionData?.formErrors?.username} */>
+                     defaultValue={vehicle ? vehicle.type : ""}
+                     error={!!formErrors.type}
+                     helperText={formErrors.type}>
             {VehicleType.map((type) => (
               <MenuItem key={type} value={type}>
                 {type}
@@ -81,20 +125,25 @@ export default function GarageAddEditPage() {
             ))}
           </TextField>
           <TextField required label="Brand" name="brand" size="small"
-                     defaultValue={vehicle ? vehicle.brand : ""} /*error={/*!!actionData?.formErrors?.username}*/
-            /*helperText={actionData?.formErrors?.username} */ />
+                     defaultValue={vehicle ? vehicle.brand : ""}
+                     error={!!formErrors.brand}
+                     helperText={formErrors.brand} />
           <TextField required label="Model" name="model" size="small"
-                     defaultValue={vehicle ? vehicle.model : ""} /*error={/*!!actionData?.formErrors?.username}*/
-            /*helperText={actionData?.formErrors?.username} */ />
+                     defaultValue={vehicle ? vehicle.model : ""}
+                     error={!!formErrors.model}
+                     helperText={formErrors.model} />
           <TextField label="Year" name="year" size="small"
-                     defaultValue={vehicle ? vehicle.year : ""} /*error={/*!!actionData?.formErrors?.username}*/
-            /*helperText={actionData?.formErrors?.username} */ />
+                     defaultValue={vehicle ? vehicle.year : ""}
+                     error={!!formErrors.year}
+                     helperText={formErrors.year} />
           <TextField label="License plate" name="licensePlate" size="small"
-                     defaultValue={vehicle ? vehicle.licensePlate : ""} /*error={/*!!actionData?.formErrors?.username}*/
-            /*helperText={actionData?.formErrors?.username} */ />
+                     defaultValue={vehicle ? vehicle.licensePlate : ""}
+                     error={!!formErrors.licensePlate}
+                     helperText={formErrors.licensePlate} />
           <TextField label="VIN number" name="vin" size="small"
-                     defaultValue={vehicle ? vehicle.vin : ""} /*error={/*!!actionData?.formErrors?.username}*/
-            /*helperText={actionData?.formErrors?.username} */ />
+                     defaultValue={vehicle ? vehicle.vin : ""}
+                     error={!!formErrors.vin}
+                     helperText={formErrors.vin} />
         </Stack>
         <Stack direction="row" spacing={1} sx={{mt: 4, justifyContent: "flex-end"}}>
           <Button component={Link} to="/garage" variant="outlined">Cancel</Button>
