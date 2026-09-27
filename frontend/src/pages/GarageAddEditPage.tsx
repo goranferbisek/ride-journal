@@ -1,8 +1,8 @@
-import {Button, Container, Stack, TextField, Typography} from "@mui/material";
+import {Button, Container, MenuItem, Stack, TextField, Typography} from "@mui/material";
 import {Link, useNavigate, useParams} from "react-router";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import api from "../api/client.ts";
-import type {Vehicle} from "../types/vehicle.ts";
+import {type Vehicle, VehicleType} from "../types/vehicle.ts";
 import type {SubmitEvent} from "react";
 
 export default function GarageAddEditPage() {
@@ -70,9 +70,15 @@ export default function GarageAddEditPage() {
       </Typography>
       <form noValidate onSubmit={handleSubmit}>
         <Stack spacing={2}>
-          <TextField required label="Vehicle Type" name="type" size="small"
+          <TextField select required label="Vehicle Type" name="type" size="small"
                      defaultValue={vehicle ? vehicle.type : ""}  /*error={/*!!actionData?.formErrors?.username}*/
-            /*helperText={actionData?.formErrors?.username} */ />
+            /*helperText={actionData?.formErrors?.username} */>
+            {VehicleType.map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField required label="Brand" name="brand" size="small"
                      defaultValue={vehicle ? vehicle.brand : ""} /*error={/*!!actionData?.formErrors?.username}*/
             /*helperText={actionData?.formErrors?.username} */ />
