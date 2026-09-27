@@ -44,9 +44,10 @@ export default function GarageAddEditPage() {
     const formData = new FormData(event.currentTarget);
 
     const year = String(formData.get("year") ?? "").trim();
+    const type = String(formData.get("type") ?? "").trim();
 
     saveVehicle.mutate({
-      type: String(formData.get("type") ?? "") as Vehicle["type"],
+      type: (type || undefined) as unknown as Vehicle["type"],
       brand: String(formData.get("brand") ?? "").trim(),
       model: String(formData.get("model") ?? "").trim(),
       year: year ? Number(year) : undefined,

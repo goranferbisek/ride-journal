@@ -9,5 +9,5 @@ export type Vehicle = {
   vin?: string,
 }
 
-export const VehicleType = ['CAR', 'MOTORCYCLE', 'TRUCK', "MOTORHOME", 'OTHER'] as const;
+export const VehicleType = ['CAR', 'MOTORCYCLE', 'MOTORHOME', 'TRUCK', 'OTHER'] as const;
 export type VehicleType = (typeof VehicleType)[number];
