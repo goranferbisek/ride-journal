@@ -50,11 +50,10 @@ export default function GarageAddEditPage() {
   const navigate = useNavigate();
   const [yearError, setYearError] = useState<string>();
 
-  const {data: vehicle, isPending, isError, error} = useQuery({
+  const {data: vehicle, isFetchedAfterMount, isError, error} = useQuery({
     queryKey: ['vehicles', vehicleId],
     queryFn: () => fetchVehicle(vehicleId),
     enabled: isEdit,
-    initialData: () => queryClient.getQueryData<Vehicle[]>(['vehicles'])?.find(v => v.id === vehicleId),
   });
 
   async function fetchVehicle(id: number): Promise<Vehicle> {
@@ -102,7 +101,7 @@ export default function GarageAddEditPage() {
     });
   }
 
-  if (isEdit && isPending) {
+  if (isEdit && !isFetchedAfterMount) {
     return <p>Loading vehicle...</p>;
   }
 
