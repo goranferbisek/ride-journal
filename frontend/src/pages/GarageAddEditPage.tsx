@@ -3,7 +3,7 @@ import {Link, useNavigate, useParams} from "react-router";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import api from "../api/client.ts";
 import {type Vehicle, VehicleType} from "../types/vehicle.ts";
-import type {SubmitEvent} from "react";
+import {type SubmitEvent, useState} from "react";
 import axios from "axios";
 
 type VehicleFormData = Omit<Vehicle, "id">;
@@ -48,6 +48,7 @@ export default function GarageAddEditPage() {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+  const [yearError, setYearError] = useState<string>();
 
   const {data: vehicle, isPending, isError, error} = useQuery({
     queryKey: ['vehicles', vehicleId],
@@ -83,6 +84,13 @@ export default function GarageAddEditPage() {
 
     const year = String(formData.get("year") ?? "").trim();
     const type = String(formData.get("type") ?? "").trim();
+
+    if (year && !/^\d+$/.test(year)) {
+      saveVehicle.reset();
+      setYearError("Year must be a whole number");
+      return;
+    }
+    setYearError(undefined);
 
     saveVehicle.mutate({
       type: (type || undefined) as unknown as Vehicle["type"],
@@ -134,8 +142,8 @@ export default function GarageAddEditPage() {
                      helperText={formErrors.model} />
           <TextField label="Year" name="year" size="small"
                      defaultValue={vehicle ? vehicle.year : ""}
-                     error={!!formErrors.year}
-                     helperText={formErrors.year} />
+                     error={!!(yearError ?? formErrors.year)}
+                     helperText={yearError ?? formErrors.year} />
           <TextField label="License plate" name="licensePlate" size="small"
                      defaultValue={vehicle ? vehicle.licensePlate : ""}
                      error={!!formErrors.licensePlate}
