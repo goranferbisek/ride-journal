@@ -6,6 +6,7 @@ public enum VehicleType {
     CAR,
     MOTORCYCLE,
     MOTORHOME,
+    TRUCK,
     OTHER;
 
     @JsonCreator
