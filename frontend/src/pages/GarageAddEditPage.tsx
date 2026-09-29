@@ -1,4 +1,17 @@
-import {Alert, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Stack, TextField, Typography} from "@mui/material";
+import {
+  Alert,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography
+} from "@mui/material";
 import {Link, useNavigate, useParams} from "react-router";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import api from "../api/client.ts";
@@ -12,9 +25,9 @@ type FormErrors = Partial<Record<keyof VehicleFormData, string>>;
 function extractFormErrors(error: unknown): { formErrors: FormErrors; generalError?: string } {
   if (!axios.isAxiosError<{ message?: string }>(error) || !error.response?.data?.message) {
     if (axios.isAxiosError(error) && error.message) {
-      return { formErrors: {}, generalError: error.message };
+      return {formErrors: {}, generalError: error.message};
     }
-    return { formErrors: {} };
+    return {formErrors: {}};
   }
 
   const message = error.response.data.message;
@@ -151,23 +164,23 @@ export default function GarageAddEditPage() {
           <TextField required label="Brand" name="brand" size="small"
                      defaultValue={vehicle ? vehicle.brand : ""}
                      error={!!formErrors.brand}
-                     helperText={formErrors.brand} />
+                     helperText={formErrors.brand}/>
           <TextField required label="Model" name="model" size="small"
                      defaultValue={vehicle ? vehicle.model : ""}
                      error={!!formErrors.model}
-                     helperText={formErrors.model} />
+                     helperText={formErrors.model}/>
           <TextField label="Year" name="year" size="small"
                      defaultValue={vehicle ? vehicle.year : ""}
                      error={!!(yearError ?? formErrors.year)}
-                     helperText={yearError ?? formErrors.year} />
+                     helperText={yearError ?? formErrors.year}/>
           <TextField label="License plate" name="licensePlate" size="small"
                      defaultValue={vehicle ? vehicle.licensePlate : ""}
                      error={!!formErrors.licensePlate}
-                     helperText={formErrors.licensePlate} />
+                     helperText={formErrors.licensePlate}/>
           <TextField label="VIN number" name="vin" size="small"
                      defaultValue={vehicle ? vehicle.vin : ""}
                      error={!!formErrors.vin}
-                     helperText={formErrors.vin} />
+                     helperText={formErrors.vin}/>
         </Stack>
         <Stack direction="row" sx={{mt: 4, justifyContent: "space-between"}}>
           {isEdit ? (
@@ -178,7 +191,7 @@ export default function GarageAddEditPage() {
                     }}>
               Delete
             </Button>
-          ) : <span />}
+          ) : <span/>}
           <Stack direction="row" spacing={1}>
             <Button component={Link} to="/garage" variant="outlined">Cancel</Button>
             <Button type="submit" variant="contained" loading={saveVehicle.isPending}>
