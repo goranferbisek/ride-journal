@@ -1,4 +1,4 @@
-import {Alert, Button, Container, MenuItem, Stack, TextField, Typography} from "@mui/material";
+import {Alert, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Stack, TextField, Typography} from "@mui/material";
 import {Link, useNavigate, useParams} from "react-router";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import api from "../api/client.ts";
@@ -49,6 +49,7 @@ export default function GarageAddEditPage() {
 
   const navigate = useNavigate();
   const [yearError, setYearError] = useState<string>();
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const {data: vehicle, isFetchedAfterMount, isError, error} = useQuery({
     queryKey: ['vehicles', vehicleId],
@@ -72,6 +73,17 @@ export default function GarageAddEditPage() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({queryKey: ["vehicles"]});
       navigate("/garage")
+    }
+  })
+
+  const deleteVehicle = useMutation({
+    mutationFn: async () => {
+      await api.delete(`/vehicle/${vehicleId}`);
+    },
+    onSuccess: async () => {
+      queryClient.removeQueries({queryKey: ["vehicles", vehicleId]});
+      await queryClient.invalidateQueries({queryKey: ["vehicles"]});
+      navigate("/garage");
     }
   })
 
@@ -116,6 +128,11 @@ export default function GarageAddEditPage() {
       </Typography>
       <form noValidate onSubmit={handleSubmit}>
         <Stack spacing={2}>
+          {deleteVehicle.isError && (
+            <Alert severity="error">
+              Could not delete vehicle: {deleteVehicle.error.message}
+            </Alert>
+          )}
           {generalError && (
             <Alert severity="error">
               {generalError}
@@ -152,13 +169,39 @@ export default function GarageAddEditPage() {
                      error={!!formErrors.vin}
                      helperText={formErrors.vin} />
         </Stack>
-        <Stack direction="row" spacing={1} sx={{mt: 4, justifyContent: "flex-end"}}>
-          <Button component={Link} to="/garage" variant="outlined">Cancel</Button>
-          <Button type="submit" variant="contained" loading={saveVehicle.isPending}>
-            {saveVehicle.isPending ? "Saving..." : "Save"}
-          </Button>
+        <Stack direction="row" sx={{mt: 4, justifyContent: "space-between"}}>
+          {isEdit ? (
+            <Button color="warning" variant="outlined"
+                    onClick={() => {
+                      deleteVehicle.reset();
+                      setConfirmDeleteOpen(true);
+                    }}>
+              Delete
+            </Button>
+          ) : <span />}
+          <Stack direction="row" spacing={1}>
+            <Button component={Link} to="/garage" variant="outlined">Cancel</Button>
+            <Button type="submit" variant="contained" loading={saveVehicle.isPending}>
+              {saveVehicle.isPending ? "Saving..." : "Save"}
+            </Button>
+          </Stack>
         </Stack>
       </form>
+      <Dialog open={confirmDeleteOpen} onClose={() => !deleteVehicle.isPending && setConfirmDeleteOpen(false)}>
+        <DialogTitle>Delete vehicle?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This will permanently delete this vehicle and all of its events. This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDeleteOpen(false)} disabled={deleteVehicle.isPending}>Cancel</Button>
+          <Button color="warning" variant="contained" loading={deleteVehicle.isPending}
+                  onClick={() => deleteVehicle.mutate(undefined, {onSettled: () => setConfirmDeleteOpen(false)})}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   </>
 }
