@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Check;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -21,9 +20,9 @@ import java.time.LocalDate;
         indexes = {
                 @Index(name = "ix_vehicle_events_vehicle_id_event_date", columnList = "vehicle_id, event_date"),
                 @Index(name = "ix_vehicle_events_vehicle_id_event_type", columnList = "vehicle_id, event_type")
-        }
+        },
+        check = @CheckConstraint(name = "ck_vehicle_events_odometer_km", constraint = "odometer_km >= 0")
 )
-@Check(name = "ck_vehicle_events_odometer_km", constraints = "odometer_km >= 0")
 public class VehicleEvent extends AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
