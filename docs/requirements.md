@@ -22,7 +22,7 @@ visualizes odometer progression over time and yearly mileage per vehicle.
 ### Vehicle
 - `brand` (string)
 - `model` (string)
-- `type` — enum: `CAR`, `MOTORCYCLE`, `MOTORHOME`, `OTHER`
+- `type` — enum: `CAR`, `MOTORCYCLE`, `MOTORHOME`, `TRUCK`, `OTHER`
 - `year` (optional, integer — year of manufacture)
 - `licensePlate` (optional, string)
 - `vin` (optional, string)

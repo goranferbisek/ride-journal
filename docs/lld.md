@@ -17,7 +17,7 @@
 | user_id | BIGINT | FK → users.id, NOT NULL |
 | brand | VARCHAR(100) | NOT NULL |
 | model | VARCHAR(100) | NOT NULL |
-| type | VARCHAR(20) | NOT NULL, enum: CAR / MOTORCYCLE / MOTORHOME / OTHER |
+| type | VARCHAR(20) | NOT NULL, enum: CAR / MOTORCYCLE / MOTORHOME / TRUCK / OTHER |
 | year | INTEGER | nullable |
 | license_plate | VARCHAR(20) | nullable |
 | vin | VARCHAR(17) | nullable, CHECK (LENGTH(vin) = 17) when not null |
