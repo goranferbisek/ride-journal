@@ -104,6 +104,7 @@ export default function GarageAddEditPage() {
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (saveVehicle.isPending || deleteVehicle.isPending) return;
     const formData = new FormData(event.currentTarget);
 
     const year = String(formData.get("year") ?? "").trim();
@@ -184,7 +185,7 @@ export default function GarageAddEditPage() {
         </Stack>
         <Stack direction="row" sx={{mt: 4, justifyContent: "space-between"}}>
           {isEdit ? (
-            <Button color="warning" variant="outlined"
+            <Button color="warning" variant="outlined" disabled={saveVehicle.isPending}
                     onClick={() => {
                       deleteVehicle.reset();
                       setConfirmDeleteOpen(true);
@@ -194,7 +195,8 @@ export default function GarageAddEditPage() {
           ) : <span/>}
           <Stack direction="row" spacing={1}>
             <Button component={Link} to="/garage" variant="outlined">Cancel</Button>
-            <Button type="submit" variant="contained" loading={saveVehicle.isPending}>
+            <Button type="submit" variant="contained" loading={saveVehicle.isPending}
+                    disabled={deleteVehicle.isPending}>
               {saveVehicle.isPending ? "Saving..." : "Save"}
             </Button>
           </Stack>
@@ -210,6 +212,7 @@ export default function GarageAddEditPage() {
         <DialogActions>
           <Button onClick={() => setConfirmDeleteOpen(false)} disabled={deleteVehicle.isPending}>Cancel</Button>
           <Button color="warning" variant="contained" loading={deleteVehicle.isPending}
+                  disabled={saveVehicle.isPending}
                   onClick={() => deleteVehicle.mutate(undefined, {onSettled: () => setConfirmDeleteOpen(false)})}>
             Delete
           </Button>
