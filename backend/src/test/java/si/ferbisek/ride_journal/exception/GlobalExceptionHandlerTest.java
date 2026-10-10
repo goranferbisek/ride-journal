@@ -48,6 +48,16 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void badRequestReturns400WithErrorShape() throws Exception {
+        mockMvc.perform(get("/test/bad-request"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("fromYear must be in range"))
+                .andExpect(jsonPath("$.path").value("/test/bad-request"));
+    }
+
+    @Test
     void notFoundReturns404WithErrorShape() throws Exception {
         mockMvc.perform(get("/test/not-found"))
                 .andExpect(status().isNotFound())
@@ -100,6 +110,11 @@ class GlobalExceptionHandlerTest {
         @PostMapping("/test/validate")
         public String validate(@Valid @RequestBody TestRequest request) {
             return "ok";
+        }
+
+        @GetMapping("/test/bad-request")
+        public String badRequest() {
+            throw new BadRequestException("fromYear must be in range");
         }
 
         @GetMapping("/test/not-found")

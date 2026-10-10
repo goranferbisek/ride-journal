@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import si.ferbisek.ride_journal.entity.EventType;
 import si.ferbisek.ride_journal.entity.Vehicle;
 import si.ferbisek.ride_journal.entity.VehicleEvent;
+import si.ferbisek.ride_journal.exception.BadRequestException;
 import si.ferbisek.ride_journal.exception.ResourceNotFoundException;
 import si.ferbisek.ride_journal.repository.VehicleEventRepository;
 import si.ferbisek.ride_journal.repository.VehicleRepository;
@@ -30,6 +31,8 @@ public class VehicleEventServiceImpl implements VehicleEventService {
     @Override
     @Transactional(readOnly = true)
     public Page<VehicleEvent> getAll(Long userId, Long vehicleId, EventType eventType, Integer fromYear, Integer toYear, Pageable pageable) {
+        validateYear(fromYear, "fromYear");
+        validateYear(toYear, "toYear");
         requireVehicle(userId, vehicleId);
 
         Specification<VehicleEvent> spec = (root, query, cb) -> cb.equal(root.get("vehicle").get("id"), vehicleId);
@@ -78,6 +81,12 @@ public class VehicleEventServiceImpl implements VehicleEventService {
     public void delete(Long userId, Long vehicleId, Long eventId) {
         requireVehicle(userId, vehicleId);
         eventRepository.delete(requireEvent(vehicleId, eventId));
+    }
+
+    private void validateYear(Integer year, String parameter) {
+        if (year != null && (year < LocalDate.MIN.getYear() || year > LocalDate.MAX.getYear())) {
+            throw new BadRequestException(parameter + " must be between " + LocalDate.MIN.getYear() + " and " + LocalDate.MAX.getYear());
+        }
     }
 
     private Vehicle requireVehicle(Long userId, Long vehicleId) {
