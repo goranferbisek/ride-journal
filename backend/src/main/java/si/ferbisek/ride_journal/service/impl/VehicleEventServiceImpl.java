@@ -2,6 +2,7 @@ package si.ferbisek.ride_journal.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import si.ferbisek.ride_journal.repository.VehicleRepository;
 import si.ferbisek.ride_journal.service.VehicleEventService;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,8 +25,6 @@ import java.time.LocalDate;
 public class VehicleEventServiceImpl implements VehicleEventService {
 
     static final String ODOMETER_REGRESSION_WARNING = "odometer lower than previous reading";
-    private static final long NO_EVENT = -1L;
-
     private final VehicleEventRepository eventRepository;
     private final VehicleRepository vehicleRepository;
 
@@ -61,7 +61,7 @@ public class VehicleEventServiceImpl implements VehicleEventService {
     public SavedEvent create(Long userId, Long vehicleId, VehicleEvent event) {
         Vehicle vehicle = requireVehicle(userId, vehicleId);
         event.setVehicle(vehicle);
-        String warning = checkOdometer(vehicleId, event, NO_EVENT);
+        String warning = checkOdometer(vehicleId, event, null);
         return new SavedEvent(eventRepository.save(event), warning);
     }
 
@@ -102,15 +102,16 @@ public class VehicleEventServiceImpl implements VehicleEventService {
                 .orElseThrow(() -> new ResourceNotFoundException("Event with id = " + eventId + " not found"));
     }
 
-    private String checkOdometer(Long vehicleId, VehicleEvent event, Long excludedEventId) {
+    private String checkOdometer(Long vehicleId, VehicleEvent event, Long eventId) {
         if (event.getOdometerKm() == null) {
             return null;
         }
-        return eventRepository
-                .findFirstByVehicle_IdAndOdometerKmIsNotNullAndDateLessThanEqualAndIdNotOrderByDateDescIdDesc(
-                        vehicleId, event.getDate(), excludedEventId)
-                .filter(previous -> event.getOdometerKm() < previous.getOdometerKm())
-                .map(previous -> ODOMETER_REGRESSION_WARNING)
+        Optional<VehicleEvent> previous = eventRepository
+                .findPreviousOdometerReadings(vehicleId, event.getDate(), eventId, PageRequest.of(0, 1))
+                .stream()
+                .findFirst();
+        return previous.filter(reading -> event.getOdometerKm() < reading.getOdometerKm())
+                .map(reading -> ODOMETER_REGRESSION_WARNING)
                 .orElse(null);
     }
 }
