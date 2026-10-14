@@ -38,6 +38,6 @@ export default function GaragePage() {
 }
 
 async function fetchVehicles(): Promise<Vehicle[]> {
-  const result = await api.get<Vehicle[]>("/vehicle");
+  const result = await api.get<Vehicle[]>("/vehicles");
   return result.data
 }
