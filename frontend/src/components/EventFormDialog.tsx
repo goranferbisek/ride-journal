@@ -17,6 +17,9 @@ import axios from "axios";
 
 type FormErrors = Partial<Record<keyof EventRequest, string>>;
 
+// no vehicle has more than 5 milion km
+const MAX_ODOMETER_KM = 5_000_000;
+
 interface EventFormDialogProps {
   open: boolean;
   vehicleId: number;
@@ -117,6 +120,8 @@ export default function EventFormDialog({open, vehicleId, event, onClose, onSucc
     }
     if (odometerKm && !/^\d+$/.test(odometerKm)) {
       errors.odometerKm = "Odometer must be a whole number >= 0";
+    } else if (odometerKm && Number(odometerKm) > MAX_ODOMETER_KM) {
+      errors.odometerKm = `Odometer must lower than ${MAX_ODOMETER_KM}`;
     }
     setClientErrors(errors);
     if (Object.keys(errors).length > 0) {
