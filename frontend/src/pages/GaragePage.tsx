@@ -1,12 +1,11 @@
-import {useQuery} from '@tanstack/react-query';
-import api from "../api/client.ts";
-import type {Vehicle} from "../types/vehicle.ts";
+import {useQuery} from "@tanstack/react-query";
 import {Button, Container, List, Stack, Typography} from "@mui/material";
 import {Link} from "react-router";
+import {fetchVehicles} from "../api/vehicles.ts";
 import VehicleCard from "../components/VehicleCard.tsx";
 
 export default function GaragePage() {
-  const {data: vehicles = [], isPending, isError, error} = useQuery({queryKey: ['vehicles'], queryFn: fetchVehicles})
+  const {data: vehicles = [], isPending, isError, error} = useQuery({queryKey: ["vehicles"], queryFn: fetchVehicles})
 
   if (isPending) {
     return <p>Loading vehicles...</p>;
@@ -35,9 +34,4 @@ export default function GaragePage() {
       </Stack>
     </Container>
   </>
-}
-
-async function fetchVehicles(): Promise<Vehicle[]> {
-  const result = await api.get<Vehicle[]>("/vehicles");
-  return result.data
 }
