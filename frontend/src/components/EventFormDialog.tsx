@@ -28,6 +28,9 @@ interface EventFormDialogProps {
   onSuccess: () => void;
 }
 
+// Event dates are calendar days in the user's local timezone, so default/max use the browser's local date.
+// The backend (see NotFutureDate) accepts dates up to "today" in UTC+14, so it never rejects a valid local date.
+// UTC+14 is the furthest-ahead timezone in use
 function getToday() {
   const now = new Date();
   const month = String(now.getMonth() + 1).padStart(2, "0");
