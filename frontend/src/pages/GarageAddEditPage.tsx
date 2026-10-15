@@ -71,15 +71,15 @@ export default function GarageAddEditPage() {
   });
 
   async function fetchVehicle(id: number): Promise<Vehicle> {
-    const result = await api.get<Vehicle>(`/vehicle/${id}`);
+    const result = await api.get<Vehicle>(`/vehicles/${id}`);
     return result.data
   }
 
   const saveVehicle = useMutation({
     mutationFn: async (payload: Omit<Vehicle, "id">) => {
       const response = isEdit
-        ? await api.put<Vehicle>(`/vehicle/${vehicleId}`, payload)
-        : await api.post<Vehicle>(`/vehicle`, payload)
+        ? await api.put<Vehicle>(`/vehicles/${vehicleId}`, payload)
+        : await api.post<Vehicle>(`/vehicles`, payload)
 
       return response.data;
     },
@@ -91,7 +91,7 @@ export default function GarageAddEditPage() {
 
   const deleteVehicle = useMutation({
     mutationFn: async () => {
-      await api.delete(`/vehicle/${vehicleId}`);
+      await api.delete(`/vehicles/${vehicleId}`);
     },
     onSuccess: async () => {
       queryClient.removeQueries({queryKey: ["vehicles", vehicleId]});

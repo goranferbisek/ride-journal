@@ -20,7 +20,7 @@ export default function GaragePage() {
     <Container maxWidth="md" sx={{py: 4}}>
       <Stack direction="row" spacing={2} sx={{alignItems: "center", justifyContent: "space-between"}}>
         <Typography variant="h4">Garage</Typography>
-        <Button component={Link} to="/garage/vehicle/add" variant="contained">Add</Button>
+        <Button component={Link} to="/garage/vehicles/new" variant="contained">Add</Button>
       </Stack>
       <Stack>
         {vehicles.length == 0 ? (
@@ -38,6 +38,6 @@ export default function GaragePage() {
 }
 
 async function fetchVehicles(): Promise<Vehicle[]> {
-  const result = await api.get<Vehicle[]>("/vehicle");
+  const result = await api.get<Vehicle[]>("/vehicles");
   return result.data
 }

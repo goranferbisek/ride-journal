@@ -12,8 +12,8 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/register" element={<RegisterPage/>} action={registerAction}/>
     <Route element={<ProtectedRoute/>}>
       <Route path="/garage" element={<GaragePage/>}/>
-      <Route path="/garage/vehicle/add" element={<GarageAddEditPage/>}/>
-      <Route path="/garage/vehicle/:id/edit" element={<GarageAddEditPage/>}/>
+      <Route path="/garage/vehicles/new" element={<GarageAddEditPage/>}/>
+      <Route path="/garage/vehicles/:id/edit" element={<GarageAddEditPage/>}/>
     </Route>
   </Route>
 );

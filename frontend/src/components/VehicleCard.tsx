@@ -18,7 +18,7 @@ export default function VehicleCard({vehicle}: VehicleCardProps) {
           {vehicle.licensePlate && <Chip label={vehicle.licensePlate}/>}
           {vehicle.vin && <Chip label={vehicle.vin}/>}
         </Stack>
-        <Button component={Link} to={`/garage/vehicle/${vehicle.id}/edit`} variant="contained">Edit</Button>
+        <Button component={Link} to={`/garage/vehicles/${vehicle.id}/edit`} variant="contained">Edit</Button>
       </Stack>
     </ListItem>
   );
