@@ -20,7 +20,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const navigation = useNavigation();
   const {loginSuccess} = useAuth();
-  const redirectPath = sessionStorage.getItem("redirectPath") || "/garage";
+  const redirectPath = sessionStorage.getItem("redirectPath") || "/dashboard";
 
   const isSubmitting = navigation.state === "submitting";
 
